@@ -1,0 +1,119 @@
+﻿Build started 3/9/2011 3:19:36 PM.
+     1>Project "C:\Users\dplakosh\Desktop\NewOnlineFaceRec\jpeg-6b\jpeg-6b\jpeg-6b.vcxproj" on node 3 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Debug\jpeg-6b.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt jcapimin.cpp jcapistd.cpp jccoefct.cpp jccolor.cpp jcdctmgr.cpp jchuff.cpp jcinit.cpp jcmainct.cpp jcmarker.cpp jcmaster.cpp jcomapi.cpp jcparam.cpp jcphuff.cpp jcprepct.cpp jcsample.cpp jctrans.cpp jdapimin.cpp jdapistd.cpp jdatadst.cpp jdatasrc.cpp jdcoefct.cpp jdcolor.cpp jddctmgr.cpp jdhuff.cpp jdinput.cpp jdmainct.cpp jdmarker.cpp jdmaster.cpp jdmerge.cpp jdphuff.cpp jdpostct.cpp jdsample.cpp jdtrans.cpp jerror.cpp jfdctflt.cpp jfdctfst.cpp jfdctint.cpp jidctflt.cpp jidctfst.cpp jidctint.cpp jidctred.cpp jmemansi.cpp jmemmgr.cpp jpegtran.cpp jquant1.cpp jquant2.cpp jutils.cpp memdest.cpp memsrc.cpp
+         memsrc.cpp
+         memdest.cpp
+         jutils.cpp
+         jquant2.cpp
+         jquant1.cpp
+         jpegtran.cpp
+         jmemmgr.cpp
+         jmemansi.cpp
+         jidctred.cpp
+         jidctint.cpp
+         jidctfst.cpp
+         jidctflt.cpp
+         jfdctint.cpp
+         jfdctfst.cpp
+         jfdctflt.cpp
+         jerror.cpp
+         jdtrans.cpp
+         jdsample.cpp
+         jdpostct.cpp
+         jdphuff.cpp
+         Generating Code...
+         Compiling...
+         jdmerge.cpp
+         jdmaster.cpp
+         jdmarker.cpp
+         jdmainct.cpp
+         jdinput.cpp
+         jdhuff.cpp
+         jddctmgr.cpp
+         jdcolor.cpp
+         jdcoefct.cpp
+         jdatasrc.cpp
+         jdatadst.cpp
+         jdapistd.cpp
+         jdapimin.cpp
+         jctrans.cpp
+         jcsample.cpp
+         jcprepct.cpp
+         jcphuff.cpp
+         jcparam.cpp
+         jcomapi.cpp
+         jcmaster.cpp
+         Generating Code...
+         Compiling...
+         jcmarker.cpp
+         jcmainct.cpp
+         jcinit.cpp
+         jchuff.cpp
+         jcdctmgr.cpp
+         jccolor.cpp
+         jccoefct.cpp
+         jcapistd.cpp
+         jcapimin.cpp
+         Generating Code...
+       Lib:
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\Lib.exe /OUT:"C:\Users\dplakosh\Desktop\NewOnlineFaceRec\jpeg-6b\Debug\jpeg-6b.lib" /NOLOGO Debug\jcapimin.obj
+         Debug\jcapistd.obj
+         Debug\jccoefct.obj
+         Debug\jccolor.obj
+         Debug\jcdctmgr.obj
+         Debug\jchuff.obj
+         Debug\jcinit.obj
+         Debug\jcmainct.obj
+         Debug\jcmarker.obj
+         Debug\jcmaster.obj
+         Debug\jcomapi.obj
+         Debug\jcparam.obj
+         Debug\jcphuff.obj
+         Debug\jcprepct.obj
+         Debug\jcsample.obj
+         Debug\jctrans.obj
+         Debug\jdapimin.obj
+         Debug\jdapistd.obj
+         Debug\jdatadst.obj
+         Debug\jdatasrc.obj
+         Debug\jdcoefct.obj
+         Debug\jdcolor.obj
+         Debug\jddctmgr.obj
+         Debug\jdhuff.obj
+         Debug\jdinput.obj
+         Debug\jdmainct.obj
+         Debug\jdmarker.obj
+         Debug\jdmaster.obj
+         Debug\jdmerge.obj
+         Debug\jdphuff.obj
+         Debug\jdpostct.obj
+         Debug\jdsample.obj
+         Debug\jdtrans.obj
+         Debug\jerror.obj
+         Debug\jfdctflt.obj
+         Debug\jfdctfst.obj
+         Debug\jfdctint.obj
+         Debug\jidctflt.obj
+         Debug\jidctfst.obj
+         Debug\jidctint.obj
+         Debug\jidctred.obj
+         Debug\jmemansi.obj
+         Debug\jmemmgr.obj
+         Debug\jpegtran.obj
+         Debug\jquant1.obj
+         Debug\jquant2.obj
+         Debug\jutils.obj
+         Debug\memdest.obj
+         Debug\memsrc.obj
+         jpeg-6b.vcxproj -> C:\Users\dplakosh\Desktop\NewOnlineFaceRec\jpeg-6b\Debug\jpeg-6b.lib
+       FinalizeBuildStatus:
+         Deleting file "Debug\jpeg-6b.unsuccessfulbuild".
+         Touching "Debug\jpeg-6b.lastbuildstate".
+     1>Done Building Project "C:\Users\dplakosh\Desktop\NewOnlineFaceRec\jpeg-6b\jpeg-6b\jpeg-6b.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:05.22

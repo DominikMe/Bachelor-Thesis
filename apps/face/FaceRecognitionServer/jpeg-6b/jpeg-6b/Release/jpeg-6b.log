@@ -1,0 +1,116 @@
+﻿Build started 3/9/2011 3:19:31 PM.
+     1>Project "C:\Users\dplakosh\Desktop\NewOnlineFaceRec\jpeg-6b\jpeg-6b\jpeg-6b.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Release\jpeg-6b.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt jcapimin.cpp jcapistd.cpp jccoefct.cpp jccolor.cpp jcdctmgr.cpp jchuff.cpp jcinit.cpp jcmainct.cpp jcmarker.cpp jcmaster.cpp jcomapi.cpp jcparam.cpp jcphuff.cpp jcprepct.cpp jcsample.cpp jctrans.cpp jdapimin.cpp jdapistd.cpp jdatadst.cpp jdatasrc.cpp jdcoefct.cpp jdcolor.cpp jddctmgr.cpp jdhuff.cpp jdinput.cpp jdmainct.cpp jdmarker.cpp jdmaster.cpp jdmerge.cpp jdphuff.cpp jdpostct.cpp jdsample.cpp jdtrans.cpp jerror.cpp jfdctflt.cpp jfdctfst.cpp jfdctint.cpp jidctflt.cpp jidctfst.cpp jidctint.cpp jidctred.cpp jmemansi.cpp jmemmgr.cpp jpegtran.cpp jquant1.cpp jquant2.cpp jutils.cpp memdest.cpp memsrc.cpp
+         jcapimin.cpp
+         jcapistd.cpp
+         jccoefct.cpp
+         jccolor.cpp
+         jcdctmgr.cpp
+         jchuff.cpp
+         jcinit.cpp
+         jcmainct.cpp
+         jcmarker.cpp
+         jcmaster.cpp
+         jcomapi.cpp
+         jcparam.cpp
+         jcphuff.cpp
+         jcprepct.cpp
+         jcsample.cpp
+         jctrans.cpp
+         jdapimin.cpp
+         jdapistd.cpp
+         jdatadst.cpp
+         jdatasrc.cpp
+         Compiling...
+         jdcoefct.cpp
+         jdcolor.cpp
+         jddctmgr.cpp
+         jdhuff.cpp
+         jdinput.cpp
+         jdmainct.cpp
+         jdmarker.cpp
+         jdmaster.cpp
+         jdmerge.cpp
+         jdphuff.cpp
+         jdpostct.cpp
+         jdsample.cpp
+         jdtrans.cpp
+         jerror.cpp
+         jfdctflt.cpp
+         jfdctfst.cpp
+         jfdctint.cpp
+         jidctflt.cpp
+         jidctfst.cpp
+         jidctint.cpp
+         Compiling...
+         jidctred.cpp
+         jmemansi.cpp
+         jmemmgr.cpp
+         jpegtran.cpp
+         jquant1.cpp
+         jquant2.cpp
+         jutils.cpp
+         memdest.cpp
+         memsrc.cpp
+       Lib:
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\Lib.exe /OUT:"C:\Users\dplakosh\Desktop\NewOnlineFaceRec\jpeg-6b\Release\jpeg-6b.lib" /NOLOGO /LTCG Release\jcapimin.obj
+         Release\jcapistd.obj
+         Release\jccoefct.obj
+         Release\jccolor.obj
+         Release\jcdctmgr.obj
+         Release\jchuff.obj
+         Release\jcinit.obj
+         Release\jcmainct.obj
+         Release\jcmarker.obj
+         Release\jcmaster.obj
+         Release\jcomapi.obj
+         Release\jcparam.obj
+         Release\jcphuff.obj
+         Release\jcprepct.obj
+         Release\jcsample.obj
+         Release\jctrans.obj
+         Release\jdapimin.obj
+         Release\jdapistd.obj
+         Release\jdatadst.obj
+         Release\jdatasrc.obj
+         Release\jdcoefct.obj
+         Release\jdcolor.obj
+         Release\jddctmgr.obj
+         Release\jdhuff.obj
+         Release\jdinput.obj
+         Release\jdmainct.obj
+         Release\jdmarker.obj
+         Release\jdmaster.obj
+         Release\jdmerge.obj
+         Release\jdphuff.obj
+         Release\jdpostct.obj
+         Release\jdsample.obj
+         Release\jdtrans.obj
+         Release\jerror.obj
+         Release\jfdctflt.obj
+         Release\jfdctfst.obj
+         Release\jfdctint.obj
+         Release\jidctflt.obj
+         Release\jidctfst.obj
+         Release\jidctint.obj
+         Release\jidctred.obj
+         Release\jmemansi.obj
+         Release\jmemmgr.obj
+         Release\jpegtran.obj
+         Release\jquant1.obj
+         Release\jquant2.obj
+         Release\jutils.obj
+         Release\memdest.obj
+         Release\memsrc.obj
+         jpeg-6b.vcxproj -> C:\Users\dplakosh\Desktop\NewOnlineFaceRec\jpeg-6b\Release\jpeg-6b.lib
+       FinalizeBuildStatus:
+         Deleting file "Release\jpeg-6b.unsuccessfulbuild".
+         Touching "Release\jpeg-6b.lastbuildstate".
+     1>Done Building Project "C:\Users\dplakosh\Desktop\NewOnlineFaceRec\jpeg-6b\jpeg-6b\jpeg-6b.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:04.99
