@@ -1,0 +1,9 @@
+{
+	"name": "SpeechRecognition",
+	"checksum": "md5",
+	"size": 42,
+	"os": "windows",
+	"type": "jar",
+	"package": "edu.cmu.sei.sphinxandroid",
+	"port": 9001
+}

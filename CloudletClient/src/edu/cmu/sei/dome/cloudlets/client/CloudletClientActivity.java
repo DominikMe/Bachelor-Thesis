@@ -32,18 +32,6 @@ public class CloudletClientActivity extends Activity implements
 	private static final String TAG = "CloudletClientActivity";
 	static final String STORE = "sdcard/myCloudlets/apps/servers/";
 
-	// static final String LINUX_IP = "192.168.1.17";
-	// static final String LINUX_ADDR_FILE = "http://" + LINUX_IP +
-	// ":8080/file";
-	// static final String LINUX_ADDR_JSON = "http://" + LINUX_IP +
-	// ":8080/json";
-	//
-	// static final String WINDOWS_IP = "192.168.1.15";
-	// static final String WINDOWS_ADDR_FILE = "http://" + WINDOWS_IP
-	// + ":8080/file";
-	// static final String WINDOWS_ADDR_JSON = "http://" + WINDOWS_IP
-	// + ":8080/json";
-
 	private CloudletApplication cloudlet;
 	private Toast toast;
 	private Uploader uploader = new Uploader(this);

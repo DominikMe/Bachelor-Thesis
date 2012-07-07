@@ -35,6 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import edu.cmu.sei.rtss.cloudlet.facerec.ui.CloudletVMInfo;
+import edu.cmu.sei.rtss.cloudlet.facerec.ui.FaceRecClientCameraPreview;
 
 import android.app.Service;
 import android.content.Intent;
@@ -44,6 +45,7 @@ import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
 import android.util.Log;
@@ -170,7 +172,14 @@ public class FacerecIOService extends Service implements
 	@Override
 	public IBinder onBind(Intent intent) {
 		Log.d(LOG_TAG, "Serivce onBind() method called. ");
-
+		
+		Bundle extras = intent.getExtras();
+		serverIPAddress = extras.getString(FaceRecClientCameraPreview.ADDRESS_KEY);
+		serverPort = extras.getInt(FaceRecClientCameraPreview.PORT_KEY);
+		Log.d(LOG_TAG, "Connect to " + serverIPAddress + ":" + serverPort);
+		
+		initSocketAndThreads();
+		
 		return mfacrecBinder;
 	}
 
@@ -183,8 +192,8 @@ public class FacerecIOService extends Service implements
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		loadVMServerInfo();
-		initSocketAndThreads();
+//		loadVMServerInfo();
+//		initSocketAndThreads();
 
 	}
 

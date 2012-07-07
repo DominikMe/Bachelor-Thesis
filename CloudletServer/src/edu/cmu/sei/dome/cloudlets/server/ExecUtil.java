@@ -42,7 +42,8 @@ public class ExecUtil {
 		}
 		// analyse and run executable
 		for (File f : files) {
-			if (f.getName().endsWith("." + type) || f.isDirectory()) {
+			if (f.isDirectory()) {// f.getName().endsWith("." + type) ||
+									// f.isDirectory()) {
 				exec(f, type);
 				break;
 			}
@@ -53,24 +54,57 @@ public class ExecUtil {
 	private static void exec(File f, String type) throws IOException,
 			UnsupportedFileTypeException, InterruptedException {
 		Log.println("Try to execute " + f.getName() + ".");
-		if (Commons.MY_OS == OS.windows) {
-			if (type.equals(Commons.FILETYPE_EXE)
-					&& f.getName().endsWith("." + Commons.FILETYPE_EXE)) {
+		if (type.equals(Commons.FILETYPE_JAR)) {
+			Log.println("Run JAR.");
+			runJAR(f);
+		} else if (Commons.MY_OS == OS.windows) {
+			if (type.equals(Commons.FILETYPE_EXE)) {
 				Log.println("Run EXE.");
-				f.setExecutable(true, false);
-				Log.println("Execute EXE: " + f.getAbsolutePath());
-				Runtime.getRuntime().exec(f.getAbsolutePath());
+				runEXE(f);
 			}
 		} else if (Commons.MY_OS == OS.linux) {
 			if (type.equals(Commons.FILETYPE_CDE)) {
 				Log.println("Run CDE.");
-				execCDE(f);
+				runCDE(f);
 			}
 		} else
 			throw new UnsupportedFileTypeException();
 	}
 
-	private static void execCDE(File cdepkg) throws IOException,
+	private static void runJAR(File jarpkg) throws IOException {
+		if (jarpkg.isDirectory()) {
+			for (File f : jarpkg.listFiles()) {
+				if (f.getName().endsWith("." + Commons.FILETYPE_JAR)) {
+					Log.println("Execute JAR: " + f.getAbsolutePath());
+					f.setExecutable(true, false);
+					// Runtime.getRuntime().exec(
+					// "java -jar " + f.getAbsolutePath());
+					if (Commons.MY_OS == OS.linux)
+						runInLinuxTerminal(jarpkg,
+								"java -jar " + f.getAbsolutePath());
+					else if (Commons.MY_OS == OS.windows)
+						runInWindowsTerminal(jarpkg,
+								"java -jar " + f.getAbsolutePath());
+					return;
+				}
+			}
+		}
+	}
+
+	private static void runEXE(File exepkg) throws IOException {
+		if (exepkg.isDirectory()) {
+			for (File f : exepkg.listFiles()) {
+				if (f.getName().endsWith("." + Commons.FILETYPE_EXE)) {
+					f.setExecutable(true, false);
+					Log.println("Execute EXE: " + f.getAbsolutePath());
+					runInWindowsTerminal(exepkg, f.getAbsolutePath());
+					return;
+				}
+			}
+		}
+	}
+
+	private static void runCDE(File cdepkg) throws IOException,
 			InterruptedException {
 		if (cdepkg.isDirectory()) {
 			for (String f : cdepkg.list()) {
@@ -80,17 +114,51 @@ public class ExecUtil {
 					File cde = new File(cdepkg.getAbsolutePath() + "/" + f);
 					cde.setExecutable(true, false);
 
-					ProcessBuilder pb = new ProcessBuilder();
-					pb.directory(cdepkg);
-					Log.println(pb.directory().getAbsolutePath());
-					String[] cmd = new String[] { TERMINAL, TERMINAL_EXECFLAG,
-							"./" + cde.getName() };
-					pb.command(cmd);
-					pb.start();
+					runInLinuxTerminal(cdepkg, "./" + cde.getName());
 					return;
 				}
 			}
 		}
+	}
+
+	private static void runInLinuxTerminal(File cwd, String command)
+			throws IOException {
+		ProcessBuilder pb = new ProcessBuilder();
+		pb.directory(cwd);
+		Log.println(pb.directory().getAbsolutePath());
+		String[] _cmd = command.split(" ");
+		String[] cmd = new String[2 + _cmd.length];
+		cmd[0] = TERMINAL;
+		cmd[1] = TERMINAL_EXECFLAG;
+		for (int i = 2; i < cmd.length; i++) {
+			cmd[i] = _cmd[i - 2];
+		}
+		pb.command(cmd);
+		pb.start();
+	}
+
+	private static void runInWindowsTerminal(File cwd, String command)
+			throws IOException {
+		ProcessBuilder pb = new ProcessBuilder();
+		pb.directory(cwd);
+		Log.println(pb.directory().getAbsolutePath());
+		String[] _cmd = command.split(" ");
+		String[] cmd = new String[3 + _cmd.length];
+		cmd[0] = "cmd";
+		cmd[1] = "/c";
+		cmd[2] = "start";
+		for (int i = 3; i < cmd.length; i++) {
+			cmd[i] = _cmd[i - 3];
+		}
+		pb.command(cmd);
+		pb.start();
+	}
+
+	public static void main(String[] args) throws Exception {
+		runInWindowsTerminal(
+				new File(
+						"C:/Users/Dome/Programmieren/Studium/Bachelorarbeit/SEI/SEIcloudlets/Cloudlet/CloudletServer/uploads/1234/Release"),
+				"FaceRecognitionServer.exe");
 	}
 
 	private static boolean isValidFileType(String type) {

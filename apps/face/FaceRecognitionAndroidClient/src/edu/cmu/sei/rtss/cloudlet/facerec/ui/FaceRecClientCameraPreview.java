@@ -19,7 +19,7 @@ ANY KIND WITH RESPECT TO FREEDOM FROM PATENT, TRADEMARK, OR COPYRIGHT INFRINGEME
 This material contains SEI Proprietary Information and may not be disclosed outside of the SEI without 
 the written consent of the Director’s Office and completion of the Disclosure of Information process.
 ------------
-**/
+ **/
 
 package edu.cmu.sei.rtss.cloudlet.facerec.ui;
 
@@ -191,6 +191,9 @@ public class FaceRecClientCameraPreview extends Activity implements
 	public static final int PREVIEW_MODE = 0;
 	public static final int TRAINING_MODE = 1;
 
+	public static final String ADDRESS_KEY = "address";
+	public static final String PORT_KEY = "port";
+
 	private Handler dataThreadHandler;
 	private ImageResponseMessage imageResponseMsg;
 
@@ -235,9 +238,11 @@ public class FaceRecClientCameraPreview extends Activity implements
 		}
 	};
 
-	private void doServiceBinding() {
+	private void doServiceBinding(String address, int port) {
 
 		Intent serviceIntent = new Intent(this, FacerecIOService.class);
+		serviceIntent.putExtra(FaceRecClientCameraPreview.ADDRESS_KEY, address);
+		serviceIntent.putExtra(FaceRecClientCameraPreview.PORT_KEY, port);
 
 		// IMP - if you put extras in this intent they will not be visible to
 		// the service onBind(Intent) method.
@@ -318,7 +323,11 @@ public class FaceRecClientCameraPreview extends Activity implements
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-		doServiceBinding();
+		Bundle extras = getIntent().getExtras();
+		String address = extras.getString(ADDRESS_KEY);
+		int port = extras.getInt(PORT_KEY);
+		Log.d(LOG_TAG, "Connect to " + address + ":" + port);
+		doServiceBinding(address, port);
 		createDataCallbackHandler();
 
 		// Create a RelativeLayout container that will hold a SurfaceView,

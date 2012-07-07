@@ -15,16 +15,17 @@ public class FileCompressor {
 
 	public static void main(String[] args) throws Exception {
 		// String path = "";// "//media/sf_VirtualApp/";
-		String path = "C:/Users/Dome/Programmieren/Studium/Bachelorarbeit/";
+		String path = "C:/Users/Dome/Programmieren/Studium/Bachelorarbeit/SEI/SEIcloudlets/Cloudlet/CloudletServer/uploads/md5/";
 		// zip(path + "_2moped-cde", "testmoped-cde.zip");
 		// System.out.println(new File(path).getParent());
-		unzip(path + "testmoped-cde.zip");
+		unzip(path + "SpeechRecognition.zip");
 	}
 
 	public static void untargz(String archive) {
 		// archive is absolute path
 		try {
-			String cmd = "tar -xzf " + archive + " -C " + new File(archive).getParent();
+			String cmd = "tar -xzf " + archive + " -C "
+					+ new File(archive).getParent();
 			System.out.println(cmd);
 			Runtime.getRuntime().exec(cmd).waitFor();
 		} catch (IOException e) {
@@ -51,10 +52,7 @@ public class FileCompressor {
 				entryPath = entryPath.replace('\\', '/');
 				// System.out.println("Extracting: " + entryPath);
 				if (entry.isDirectory()) {
-					if (!new File(entryPath).mkdirs()) {
-						System.out.println("Bööpp");
-						break;
-					}
+					new File(entryPath).mkdirs();
 				} else {
 					// write the files to the disk
 					int n;

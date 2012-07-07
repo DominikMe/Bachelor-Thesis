@@ -1,0 +1,9 @@
+{
+	"name": "FaceRecognition",
+	"checksum": "1234",
+	"size": 42,
+	"os": "windows",
+	"type": "exe",
+	"package": "edu.cmu.sei.rtss.cloudlet.facerec",
+	"port": 9876
+}
