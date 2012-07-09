@@ -3,6 +3,9 @@ package edu.cmu.sei.dome.cloudlets.server;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -10,7 +13,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-import edu.cmu.sei.dome.cloudlets.fileprocessing.FileCompressor;
+import edu.cmu.sei.dome.cloudlets.fileprocessing.FileDecompressor;
+import edu.cmu.sei.dome.cloudlets.fileprocessing.Utils;
+import edu.cmu.sei.dome.cloudlets.log.Log;
+import edu.cmu.sei.dome.cloudlets.log.TimeLog;
 
 public class FileUploadServlet extends HttpServlet {
 
@@ -34,36 +40,63 @@ public class FileUploadServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
-		System.out.println("doPost triggered");
+		Log.println("FileServlet.doPost has been triggered.");
+		TimeLog.stamp("Application upload started.");
 		Part upload = req.getPart("file");
 		String hash = Utils.readString(req.getPart("hash"));
 		String name = Utils.readString(req.getPart("name"));
+		long size = Long.parseLong(Utils.readString(req.getPart("size")));
 
 		resp.setContentType("text/html");
 		resp.setStatus(HttpServletResponse.SC_OK);
 		resp.getWriter().write(
 				String.format("You uploaded %s, %s bytes\n", upload.getName(),
 						upload.getSize()));
-		
-		// client must now have requested server push by sending a GET request to /push
+
+		// client must now have requested server push by sending a GET request
+		// to /push
 		PushServlet push = PushServlet.getInstance();
-		
+
 		// copy file to store
 		File f = copyFileToStore(name, hash, upload);
 		if (f == null) {
 			push.error("The uploaded application must be either a .zip or .tar.gz archive.");
 			return;
 		}
+		TimeLog.stamp("Application upload finished.");
 
-		// Status messages should be async
-		push.respond("Decompressing started.\n", true);
-		if (Commons.MY_OS == OS.linux) {
-			FileCompressor.untargz(f.getAbsolutePath());
-		} else if (Commons.MY_OS == OS.windows) {
-			FileCompressor.unzip(f.getAbsolutePath());
+		// check md5hash
+		try {
+			String checkhash = Utils.md5hash(f);
+			if (!hash.equals(checkhash)) {
+				push.error(Commons.ChecksumException);
+				// backtrack: delete application folder
+				Utils.deleteRecursively(new File(Commons.STORE + hash));
+				return;
+			}
+		} catch (NoSuchAlgorithmException e1) {
+			e1.printStackTrace();
+			push.error(Commons.GeneralException);
+			return;
 		}
-		push.respond("Decompressing finished.\n", true);
-		
+		TimeLog.stamp("File checksum verified.");
+
+		// check file size
+		if (size != f.length()) {
+			push.error(Commons.FilesizeException);
+			// backtrack: delete application folder
+			Utils.deleteRecursively(new File(Commons.STORE + hash));
+			return;
+		}
+		TimeLog.stamp("File size verified.");
+
+		push.respond("Decompress\n", true);
+		if (Commons.MY_OS == OS.linux) {
+			FileDecompressor.untargz(f.getAbsolutePath());
+		} else if (Commons.MY_OS == OS.windows) {
+			FileDecompressor.unzip(f.getAbsolutePath());
+		}
+		TimeLog.stamp("Application decompressed.");
 
 		// try to execute file
 		try {
@@ -77,8 +110,13 @@ public class FileUploadServlet extends HttpServlet {
 		} catch (InterruptedException e) {
 			push.error(Commons.InterruptedException);
 		}
+		TimeLog.stamp("Application executed.");
+		String time = new SimpleDateFormat("yyyy-MM-dd HH-mm ")
+				.format(new Date());
+		TimeLog.writeToFile(Commons.LOG + time + name + ".txt");
+		TimeLog.reset();
 
-		push.respond("Execution started.\n", false);
+		push.respond("Execute\n", false);
 	}
 
 	private File copyFileToStore(String name, String hash, Part upload)

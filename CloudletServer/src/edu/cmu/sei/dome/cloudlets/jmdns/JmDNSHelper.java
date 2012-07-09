@@ -7,7 +7,7 @@ import java.net.UnknownHostException;
 import java.util.Collection;
 
 import edu.cmu.sei.dome.cloudlets.server.Commons;
-import edu.cmu.sei.dome.cloudlets.server.Log;
+import edu.cmu.sei.dome.cloudlets.log.Log;
 
 public class JmDNSHelper {
 

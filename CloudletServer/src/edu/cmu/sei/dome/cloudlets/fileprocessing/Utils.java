@@ -1,4 +1,4 @@
-package edu.cmu.sei.dome.cloudlets.server;
+package edu.cmu.sei.dome.cloudlets.fileprocessing;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -25,6 +25,16 @@ public final class Utils {
 	private Utils() {
 	}
 
+	public static void main(String[] args) throws Exception {
+		// System.out
+		// .println(Utils
+		// .md5hash(new File(
+		// "C:/Users/Dome/Programmieren/Studium/Bachelorarbeit/SEI/SEIcloudlets/Cloudlet/appvirtualization/Face Recognition/FaceRec.zip")));
+		System.out
+				.println(md5hash(new File(
+						"C:/Users/Dome/Programmieren/Studium/Bachelorarbeit/SEI/SEIcloudlets/Cloudlet/appvirtualization/Object Recognition/moped-cde.tar.gz")));
+	}
+
 	public static String md5hash(File file) throws NoSuchAlgorithmException,
 			IOException {
 		if (!file.isFile())
@@ -37,6 +47,7 @@ public final class Utils {
 		do {
 			n = is.read(data);
 		} while (n > 0);
+		is.close();
 		return new BigInteger(1, md.digest()).toString(md.getDigestLength());
 	}
 
@@ -66,6 +77,8 @@ public final class Utils {
 			throws IOException {
 		Files.copy(in, FileSystems.getDefault().getPath(file),
 				StandardCopyOption.REPLACE_EXISTING);
+		in.close();
+
 		// BufferedInputStream bin = new BufferedInputStream(in);
 		// BufferedOutputStream fout = new BufferedOutputStream(
 		// new FileOutputStream(file));

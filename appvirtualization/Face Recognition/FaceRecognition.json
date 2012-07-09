@@ -1,7 +1,7 @@
 {
 	"name": "FaceRecognition",
-	"checksum": "1234",
-	"size": 42,
+	"checksum": "e918a05b332ce38f6ca2bd217bed7d3b",
+	"size": 12492671,
 	"os": "windows",
 	"type": "exe",
 	"package": "edu.cmu.sei.rtss.cloudlet.facerec",

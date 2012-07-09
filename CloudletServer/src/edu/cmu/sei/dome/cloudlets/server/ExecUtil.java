@@ -9,6 +9,8 @@ import java.util.Map;
 
 import org.eclipse.jetty.util.ajax.JSON;
 
+import edu.cmu.sei.dome.cloudlets.log.Log;
+
 public class ExecUtil {
 	private static final String TERMINAL = "gnome-terminal";
 	private static final String TERMINAL_EXECFLAG = "-x";
@@ -24,9 +26,11 @@ public class ExecUtil {
 		// analyse json
 		for (File f : files) {
 			if (f.getName().endsWith(".json")) {
+				FileReader freader = new FileReader(f);
 				@SuppressWarnings("unchecked")
 				Map<String, Object> j = (HashMap<String, Object>) JSON
-						.parse(new FileReader(f));
+						.parse(freader);
+				freader.close();
 				String os = (String) j.get(Commons.JSON_OS);
 				Log.println("Compare OS: " + os + " vs "
 						+ Commons.MY_OS.toString());

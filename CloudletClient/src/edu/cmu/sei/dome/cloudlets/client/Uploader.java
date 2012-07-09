@@ -55,6 +55,7 @@ public class Uploader {
 					e.printStackTrace();
 				} catch (IOException e) {
 					e.printStackTrace();
+					Log.e(TAG, "Could not reach " + params[1] + "!");
 					cloudletClient.error("Could not reach " + params[1] + "!");
 					return null;
 				}
@@ -70,7 +71,7 @@ public class Uploader {
 
 	}
 
-	public void postFile(final File f, final String checksum, final String url,
+	public void postFile(final File f, final String checksum, final long size, final String url,
 			final Handler progressHandler) {
 		new AsyncTask<String, Integer, HttpResponse>() {
 
@@ -84,9 +85,11 @@ public class Uploader {
 				try {
 					ContentBody filename = new StringBody(f.getName());
 					ContentBody hash = new StringBody(checksum);
+					ContentBody length = new StringBody("" + size);
 					mpEntity.addPart("file", file);
 					mpEntity.addPart("name", filename);
 					mpEntity.addPart("hash", hash);
+					mpEntity.addPart("size", length);
 				} catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
 					return null;

@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.continuation.Continuation;
 import org.eclipse.jetty.continuation.ContinuationSupport;
 
+import edu.cmu.sei.dome.cloudlets.log.Log;
+
 /**
  * Uses the technique of long polling for doing Server Push.
  * 

@@ -17,6 +17,10 @@ import javax.servlet.http.Part;
 
 import org.eclipse.jetty.util.ajax.JSON;
 
+import edu.cmu.sei.dome.cloudlets.fileprocessing.Utils;
+import edu.cmu.sei.dome.cloudlets.log.Log;
+import edu.cmu.sei.dome.cloudlets.log.TimeLog;
+
 public class JSONServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
@@ -24,6 +28,7 @@ public class JSONServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		TimeLog.stamp("JSON upload started.");
 		Part json_upload = req.getPart("json");
 		BufferedReader r = new BufferedReader(new InputStreamReader(
 				json_upload.getInputStream()));
@@ -39,15 +44,19 @@ public class JSONServlet extends HttpServlet {
 			Entry<String, Object> e = (Entry<String, Object>) it.next();
 			sb.append(e.getKey() + ": " + e.getValue() + "\n");
 		}
-		
+		TimeLog.stamp("JSON has been parsed.");
+
 		// copy json to store
 		File dir = new File(Commons.STORE + j.get(Commons.JSON_CHECKSUM));
 		Utils.deleteRecursively(dir);
-		
+
 		dir.mkdir();
 		Utils.writeInputStreamToFile(json_upload.getInputStream(),
-				dir.getAbsolutePath() + "/" + j.get(Commons.JSON_NAME) + ".json");
-		
+				dir.getAbsolutePath() + "/" + j.get(Commons.JSON_NAME)
+						+ ".json");
+
+		TimeLog.stamp("JSON saved to disk.");
+
 		Log.println("Received json:");
 		Log.println(sb.toString());
 

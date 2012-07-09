@@ -11,7 +11,7 @@ import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class FileCompressor {
+public class FileDecompressor {
 
 	public static void main(String[] args) throws Exception {
 		// String path = "";// "//media/sf_VirtualApp/";
@@ -36,6 +36,7 @@ public class FileCompressor {
 	}
 
 	public static void unzip(String archive) {
+		ZipInputStream zis = null;
 		try {
 			final int BUFFER = 2048;
 			byte data[] = new byte[BUFFER];
@@ -43,8 +44,7 @@ public class FileCompressor {
 			FileInputStream fis = new FileInputStream(archive);
 			CheckedInputStream checksum = new CheckedInputStream(fis,
 					new Adler32());
-			ZipInputStream zis = new ZipInputStream(new BufferedInputStream(
-					checksum));
+			zis = new ZipInputStream(new BufferedInputStream(checksum));
 
 			ZipEntry entry;
 			while ((entry = zis.getNextEntry()) != null) {

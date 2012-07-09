@@ -231,7 +231,7 @@ public class CloudletClientActivity extends Activity implements
 		progress.setMessage("Uploading " + info.name + "...");
 		progress.show();
 		new EventListener(this, url + "push", info).start();
-		uploader.postFile(info.app, info.checksum, url + "file",
+		uploader.postFile(info.app, info.checksum, info.size, url + "file",
 				progressHandler);
 	}
 }

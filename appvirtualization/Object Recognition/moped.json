@@ -1,7 +1,7 @@
 {
 	"name": "moped-cde",
-	"checksum": "8a39c196d79b78bfd7e8c11c11ddd00d",
-	"size": 28441863,
+	"checksum": "72b70dae7402f8dc39061d7576bb0328",
+	"size": 29866553,
 	"os": "linux",
 	"type": "cde",
 	"package": "edu.cmu.cs.cloudlet.android.application",

@@ -7,6 +7,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
 import edu.cmu.sei.dome.cloudlets.jmdns.JmDNSHelper;
+import edu.cmu.sei.dome.cloudlets.log.Log;
 
 public class CloudletServer {
 
@@ -23,9 +24,13 @@ public class CloudletServer {
 
 		Log.println("Detected a " + Commons.MY_OS + " system.");
 
+		// make directories if they not yet exist
 		File store = new File(Commons.STORE);
 		if (!store.isDirectory())
 			store.mkdirs();
+		File log = new File(Commons.LOG);
+		if (!log.isDirectory())
+			log.mkdirs();
 
 		Server server = new Server(Commons.PORT);
 
