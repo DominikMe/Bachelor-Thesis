@@ -10,6 +10,7 @@ import java.util.Map;
 import org.eclipse.jetty.util.ajax.JSON;
 
 import edu.cmu.sei.dome.cloudlets.log.Log;
+import edu.cmu.sei.dome.cloudlets.log.TimeLog;
 
 public class ExecUtil {
 	private static final String TERMINAL = "gnome-terminal";
@@ -70,6 +71,9 @@ public class ExecUtil {
 			if (type.equals(Commons.FILETYPE_CDE)) {
 				Log.println("Run CDE.");
 				runCDE(f);
+			} else if (type.equals(Commons.FILETYPE_REMOTE_INSTALL)) {
+				Log.println("Remote install.");
+				remoteInstall_Run(f);
 			}
 		} else
 			throw new UnsupportedFileTypeException();
@@ -125,7 +129,7 @@ public class ExecUtil {
 		}
 	}
 
-	private static void runInLinuxTerminal(File cwd, String command)
+	private static Process runInLinuxTerminal(File cwd, String command)
 			throws IOException {
 		ProcessBuilder pb = new ProcessBuilder();
 		pb.directory(cwd);
@@ -138,10 +142,10 @@ public class ExecUtil {
 			cmd[i] = _cmd[i - 2];
 		}
 		pb.command(cmd);
-		pb.start();
+		return pb.start();
 	}
 
-	private static void runInWindowsTerminal(File cwd, String command)
+	private static Process runInWindowsTerminal(File cwd, String command)
 			throws IOException {
 		ProcessBuilder pb = new ProcessBuilder();
 		pb.directory(cwd);
@@ -155,7 +159,33 @@ public class ExecUtil {
 			cmd[i] = _cmd[i - 3];
 		}
 		pb.command(cmd);
-		pb.start();
+		return pb.start();
+	}
+
+	private static void remoteInstall_Run(File pkg) throws IOException {
+		if (pkg.isDirectory()) {
+			File setup = new File(pkg.getAbsolutePath() + "/setup");
+			if (setup.isFile() && setup.canExecute()) {
+				try {
+					TimeLog.stamp("Start installation.");
+					Log.println("Remote install: " + setup.getAbsolutePath());
+					runInLinuxTerminal(pkg, setup.getAbsolutePath())
+							.waitFor();
+					TimeLog.stamp("Installation finished.");
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			for (File f : pkg.listFiles()) {
+				if (!f.isDirectory() && f.canExecute()
+						&& !f.getName().contains("install")) {
+					Log.println("Run Binary: " + f.getAbsolutePath());
+					TimeLog.stamp("Run Binary.");
+					runInLinuxTerminal(pkg, f.getAbsolutePath());
+					return;
+				}
+			}
+		}
 	}
 
 	public static void main(String[] args) throws Exception {

@@ -1,0 +1,9 @@
+{
+	"name": "moped12.04_reminst",
+	"checksum": "2d397d1ead92229fbf84930d07703c3d",
+	"size": 17675436,
+	"os": "linux",
+	"type": "install",
+	"package": "edu.cmu.cs.cloudlet.android.application",
+	"port": 9092
+}

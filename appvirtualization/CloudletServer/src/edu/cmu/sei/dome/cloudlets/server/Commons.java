@@ -24,12 +24,13 @@ public final class Commons {
 	// file types
 	public static final String FILETYPE_EXE = "exe";
 	public static final String FILETYPE_CDE = "cde";
-	public static final String FILETYPE_JAR = "jar";
+	public static final String FILETYPE_JAR = "jar";public static final String FILETYPE_REMOTE_INSTALL = "install";
 	@SuppressWarnings("serial")
 	public static final ArrayList<String> linuxTypes = new ArrayList<String>() {
 		{
 			add(FILETYPE_CDE);
 			add(FILETYPE_JAR);
+			add(FILETYPE_REMOTE_INSTALL);
 		}
 	};
 	@SuppressWarnings("serial")

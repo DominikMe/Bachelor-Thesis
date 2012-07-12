@@ -32,7 +32,7 @@ public final class Utils {
 		// "C:/Users/Dome/Programmieren/Studium/Bachelorarbeit/SEI/SEIcloudlets/Cloudlet/appvirtualization/Face Recognition/FaceRec.zip")));
 		System.out
 				.println(md5hash(new File(
-						"C:/Users/Dome/Programmieren/Studium/Bachelorarbeit/SEI/SEIcloudlets/Cloudlet/appvirtualization/Object Recognition/moped-cde.tar.gz")));
+						"C:/Users/Dome/Programmieren/Studium/Bachelorarbeit/SEI/SEIcloudlets/Cloudlet/remoteinstall/apps/RemoteInstall Object Recognition/moped_12.04_remote_install.tar.gz")));
 	}
 
 	public static String md5hash(File file) throws NoSuchAlgorithmException,
