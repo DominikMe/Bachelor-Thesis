@@ -165,16 +165,13 @@ public class ExecUtil {
 	private static void remoteInstall_Run(File pkg) throws IOException {
 		if (pkg.isDirectory()) {
 			File setup = new File(pkg.getAbsolutePath() + "/setup");
-			if (setup.isFile() && setup.canExecute()) {
-				try {
-					TimeLog.stamp("Start installation.");
-					Log.println("Remote install: " + setup.getAbsolutePath());
-					runInLinuxTerminal(pkg, setup.getAbsolutePath())
-							.waitFor();
-					TimeLog.stamp("Installation finished.");
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+			try {
+				TimeLog.stamp("Start installation.");
+				Log.println("Remote install: " + setup.getAbsolutePath());
+				install(pkg).waitFor();
+				TimeLog.stamp("Installation finished.");
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 			for (File f : pkg.listFiles()) {
 				if (!f.isDirectory() && f.canExecute()
@@ -188,11 +185,19 @@ public class ExecUtil {
 		}
 	}
 
+	private static Process install(File cwd) throws IOException {
+		ProcessBuilder pb = new ProcessBuilder();
+		pb.directory(cwd);
+		Log.println(pb.directory().getAbsolutePath());
+		String[] cmd = new String[] { "bash", "-c",
+				"echo jk42GbU | sudo -S dpkg -i packages/archives/*" };
+		pb.command(cmd);
+		return pb.start();
+	}
+
 	public static void main(String[] args) throws Exception {
-		runInWindowsTerminal(
-				new File(
-						"C:/Users/Dome/Programmieren/Studium/Bachelorarbeit/SEI/SEIcloudlets/Cloudlet/CloudletServer/uploads/1234/Release"),
-				"FaceRecognitionServer.exe");
+		remoteInstall_Run(new File(
+				"/home/dome/BachelorThesis/SEI/MyCloudlets/CloudletServer/uploads/2d397d1ead92229fbf84930d07703c3d/moped_12.04"));
 	}
 
 	private static boolean isValidFileType(String type) {

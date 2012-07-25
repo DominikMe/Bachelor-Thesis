@@ -27,6 +27,7 @@ public final class R {
         public static final int jmdns_name=0x7f040005;
         public static final int jmdns_type=0x7f040004;
         public static final int linux=0x7f040002;
+        public static final int test=0x7f040006;
         public static final int windows=0x7f040003;
     }
 }

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="hello">Hello World, CloudletClientActivity!</string>
+    <string name="hello">It\'s me, your CloudletClient!</string>
     <string name="app_name">CloudletClient</string>
     <string name="linux">linux</string>
     <string name="windows">windows</string>
     <string name="jmdns_type">_http._tcp.local.</string>
     <string name="jmdns_name">CloudletServer</string>
+    <string name="test">tescht</string>
 
 </resources>
