@@ -28,9 +28,11 @@ public class JmDNSHelper {
 		Collection<Inet4Address> addresses = NetworkUtil
 				.filterInet4Adresses(NetworkUtil.getRunningNetInterfaces());
 		InetAddress localhost = InetAddress.getLocalHost();
+		Log.println("Localhost: " + localhost.getHostAddress());
 		InetAddress loopback = InetAddress.getLoopbackAddress();
 		for (InetAddress address : addresses) {
-			if (!localhost.equals(address) && !loopback.equals(address)) {
+			// Log.println("Check " + address);
+			if (!loopback.equals(address)) {
 				Log.println(address);
 				JmDNSRegistrar jmdns = new JmDNSRegistrar(name, address,
 						Commons.PORT, attributes);

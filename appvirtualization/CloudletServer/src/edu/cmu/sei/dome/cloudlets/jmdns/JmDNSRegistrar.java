@@ -6,7 +6,7 @@ import java.net.InetAddress;
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceInfo;
 
-class JmDNSRegistrar {
+public class JmDNSRegistrar {
 
 	public final String name;
 	public final InetAddress address;

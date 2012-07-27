@@ -88,11 +88,11 @@ public class ExecUtil {
 					// Runtime.getRuntime().exec(
 					// "java -jar " + f.getAbsolutePath());
 					if (Commons.MY_OS == OS.linux)
-						runInLinuxTerminal(jarpkg,
-								"java -jar " + f.getAbsolutePath());
+						runInLinuxTerminal(jarpkg, new String[] { "java",
+								"-jar", f.getName() });
 					else if (Commons.MY_OS == OS.windows)
-						runInWindowsTerminal(jarpkg,
-								"java -jar " + f.getAbsolutePath());
+						runInWindowsTerminal(jarpkg, new String[] { "java",
+								"-jar", f.getName() });
 					return;
 				}
 			}
@@ -105,7 +105,7 @@ public class ExecUtil {
 				if (f.getName().endsWith("." + Commons.FILETYPE_EXE)) {
 					f.setExecutable(true, false);
 					Log.println("Execute EXE: " + f.getAbsolutePath());
-					runInWindowsTerminal(exepkg, f.getAbsolutePath());
+					runInWindowsTerminal(exepkg, new String[] { f.getName() });
 					return;
 				}
 			}
@@ -122,43 +122,55 @@ public class ExecUtil {
 					File cde = new File(cdepkg.getAbsolutePath() + "/" + f);
 					cde.setExecutable(true, false);
 
-					runInLinuxTerminal(cdepkg, "./" + cde.getName());
+					runInLinuxTerminal(cdepkg,
+							new String[] { "./" + cde.getName() });
 					return;
 				}
 			}
 		}
 	}
 
-	private static Process runInLinuxTerminal(File cwd, String command)
+	private static Process runInLinuxTerminal(File cwd, String[] command)
 			throws IOException {
 		ProcessBuilder pb = new ProcessBuilder();
 		pb.directory(cwd);
 		Log.println(pb.directory().getAbsolutePath());
-		String[] _cmd = command.split(" ");
-		String[] cmd = new String[2 + _cmd.length];
+		String[] cmd = new String[2 + command.length];
 		cmd[0] = TERMINAL;
 		cmd[1] = TERMINAL_EXECFLAG;
 		for (int i = 2; i < cmd.length; i++) {
-			cmd[i] = _cmd[i - 2];
+			cmd[i] = command[i - 2];
 		}
 		pb.command(cmd);
 		return pb.start();
 	}
 
-	private static Process runInWindowsTerminal(File cwd, String command)
+	/**
+	 * @param cwd
+	 * @param command
+	 *            RELATIVE PATH (otherwise not working on windows xp)
+	 * @return
+	 * @throws IOException
+	 */
+	private static Process runInWindowsTerminal(File cwd, String[] command)
 			throws IOException {
 		ProcessBuilder pb = new ProcessBuilder();
 		pb.directory(cwd);
 		Log.println(pb.directory().getAbsolutePath());
-		String[] _cmd = command.split(" ");
-		String[] cmd = new String[3 + _cmd.length];
+		String[] cmd = new String[3 + command.length];
 		cmd[0] = "cmd";
 		cmd[1] = "/c";
 		cmd[2] = "start";
 		for (int i = 3; i < cmd.length; i++) {
-			cmd[i] = _cmd[i - 3];
+			cmd[i] = command[i - 3];
 		}
 		pb.command(cmd);
+		// System.out.println("ARGS:");
+		// for (String arg : pb.command()) {
+		// System.out.println("\t" + arg);
+		// }
+		// System.out.println("DEBUG_CWD: " + pb.directory().getAbsolutePath());
+		// System.out.println("DEBUG: " + cmd[cmd.length - 1]);
 		return pb.start();
 	}
 
@@ -178,7 +190,8 @@ public class ExecUtil {
 						&& !f.getName().contains("install")) {
 					Log.println("Run Binary: " + f.getAbsolutePath());
 					TimeLog.stamp("Run Binary.");
-					runInLinuxTerminal(pkg, f.getAbsolutePath());
+					runInLinuxTerminal(pkg,
+							new String[] { f.getName() });
 					return;
 				}
 			}
@@ -196,8 +209,12 @@ public class ExecUtil {
 	}
 
 	public static void main(String[] args) throws Exception {
-		remoteInstall_Run(new File(
-				"/home/dome/BachelorThesis/SEI/MyCloudlets/CloudletServer/uploads/2d397d1ead92229fbf84930d07703c3d/moped_12.04"));
+		File f = new File("uploads/e918a05b332ce38f6ca2bd217bed7d3b/Release");
+		String exe = "FaceRecognitionServer.exe";
+		runInWindowsTerminal(f, new String[] { exe });
+
+		// remoteInstall_Run(new File(
+		// "/home/dome/BachelorThesis/SEI/MyCloudlets/CloudletServer/uploads/2d397d1ead92229fbf84930d07703c3d/moped_12.04"));
 	}
 
 	private static boolean isValidFileType(String type) {

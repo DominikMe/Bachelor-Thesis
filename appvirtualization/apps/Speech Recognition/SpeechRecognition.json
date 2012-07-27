@@ -5,5 +5,5 @@
 	"os": "windows",
 	"type": "jar",
 	"package": "edu.cmu.sei.sphinxandroid",
-	"port": 9001
+	"port": 10191
 }

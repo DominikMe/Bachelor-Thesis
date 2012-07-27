@@ -19,7 +19,7 @@ public class NetworkUtil {
 				.getNetworkInterfaces();
 		while (intfs.hasMoreElements()) {
 			NetworkInterface intf = intfs.nextElement();
-			if (intf.isUp()) {
+			if (intf.isUp() && intf.supportsMulticast() && !intf.isVirtual()) {
 				netintfs.add(intf);
 			}
 		}

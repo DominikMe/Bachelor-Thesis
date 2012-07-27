@@ -35,7 +35,7 @@ public class CloudletClientActivity extends Activity implements
 	private CloudletApplication cloudlet;
 	private Toast toast;
 	private Uploader uploader = new Uploader(this);
-	private ProgressDialog progress;
+	private static ProgressDialog progress;
 	private ArrayAdapter<String> adapter;
 
 	private static final FilenameFilter jsonFilter = new FilenameFilter() {
@@ -51,7 +51,7 @@ public class CloudletClientActivity extends Activity implements
 
 	ListView listApps;
 
-	private final Handler progressHandler = new Handler() {
+	private final static Handler progressHandler = new Handler() {
 		final String TAG = "ProgressHandler";
 
 		public void handleMessage(android.os.Message msg) {

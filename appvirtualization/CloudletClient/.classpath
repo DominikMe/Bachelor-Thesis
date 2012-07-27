@@ -4,8 +4,7 @@
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
-	<classpathentry kind="lib" path="C:/Users/Dome/Programmieren/ext/Java/httpcomponents-client-4.1.3/lib/httpmime-4.1.3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Dome/Programmieren/ext/Java/jmdns-3.4.1/lib/jmdns.jar" sourcepath="C:/Users/Dome/Programmieren/ext/Java/jmdns-3.4.1.zip"/>
-	<classpathentry kind="lib" path="C:/Program Files (x86)/Android/android-sdk/platforms/android-15/android.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/Users/Dome/Programmieren/Studium/Bachelorarbeit/SEI/SEIcloudlets/Cloudlet/appvirtualization/CloudletClient/libs/httpmime-4.1.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/Users/Dome/Programmieren/Studium/Bachelorarbeit/SEI/SEIcloudlets/Cloudlet/appvirtualization/CloudletClient/libs/jmdns.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

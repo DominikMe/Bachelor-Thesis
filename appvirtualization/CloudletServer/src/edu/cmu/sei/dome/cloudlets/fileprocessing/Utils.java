@@ -31,8 +31,9 @@ public final class Utils {
 		// .md5hash(new File(
 		// "C:/Users/Dome/Programmieren/Studium/Bachelorarbeit/SEI/SEIcloudlets/Cloudlet/appvirtualization/Face Recognition/FaceRec.zip")));
 		System.out
-				.println(new File(
-						"C:/Users/Dome/Programmieren/Studium/Bachelorarbeit/SEI/SEIcloudlets/Cloudlet/remoteinstall/apps/RemoteInstall Object Recognition/moped_12.04_remote_install.tar.gz").length());
+				.println(md5hash(new File(
+						"C:/Users/Dome/Programmieren/Studium/Bachelorarbeit/SEI/SEIcloudlets/Cloudlet/appvirtualization/apps/Speech Recognition (cde)/speechrec-cde.tar.gz")
+						));
 	}
 
 	public static String md5hash(File file) throws NoSuchAlgorithmException,

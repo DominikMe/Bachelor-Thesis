@@ -1,12 +1,16 @@
 package edu.cmu.sei.dome.cloudlets.server;
 
 import java.io.File;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.Vector;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
-import edu.cmu.sei.dome.cloudlets.jmdns.JmDNSHelper;
+import edu.cmu.sei.dome.cloudlets.jmdns.JmDNSRegistrar;
+import edu.cmu.sei.dome.cloudlets.jmdns.NetworkUtil;
 import edu.cmu.sei.dome.cloudlets.log.Log;
 
 public class CloudletServer {
@@ -38,13 +42,33 @@ public class CloudletServer {
 				ServletContextHandler.SESSIONS);
 		context.setContextPath("/");
 		server.setHandler(context);
-		
+
 		context.addServlet(new ServletHolder(new FileUploadServlet()), "/file");
 		context.addServlet(new ServletHolder(new JSONServlet()), "/json");
-		context.addServlet(new ServletHolder(PushServlet.getInstance()), "/push");
+		context.addServlet(new ServletHolder(PushServlet.getInstance()),
+				"/push");
 
 		// register cloudlet server
-		JmDNSHelper.registerService(Commons.NAME, Commons.getAttributes());
+		// JmDNSHelper.registerService(Commons.NAME, Commons.getAttributes());
+		InetAddress address = null;
+		if (args.length > 0) {
+			String intfName = args[0];
+			final NetworkInterface intf = NetworkInterface.getByName(intfName);
+			if (intf != null && intf.isUp()) {
+				address = NetworkUtil
+						.filterInet4Adresses(new Vector<NetworkInterface>() {
+							{
+								add(intf);
+							}
+						}).iterator().next();
+			}
+		}
+		if (address == null)
+			address = InetAddress.getLocalHost();
+		Log.println(address.getHostAddress());
+		JmDNSRegistrar jmdns = new JmDNSRegistrar(Commons.NAME, address,
+				Commons.PORT, Commons.getAttributes());
+		jmdns.registerService();
 
 		server.start();
 		server.join();
