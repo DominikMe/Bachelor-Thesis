@@ -1,6 +1,10 @@
 bin/
 
+
 .metadata/
-uploads/
-log/
+
+CloudletServer/uploads/
+
+CloudletServer/log/
+
 SpeechRecognitionServer/
