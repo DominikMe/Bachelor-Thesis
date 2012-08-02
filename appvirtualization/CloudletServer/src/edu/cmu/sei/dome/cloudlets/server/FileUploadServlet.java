@@ -13,10 +13,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-import edu.cmu.sei.dome.cloudlets.fileprocessing.FileDecompressor;
 import edu.cmu.sei.dome.cloudlets.fileprocessing.Utils;
 import edu.cmu.sei.dome.cloudlets.log.Log;
 import edu.cmu.sei.dome.cloudlets.log.TimeLog;
+import edu.cmu.sei.dome.cloudlets.packagehandler.PackageHandler;
+import edu.cmu.sei.dome.cloudlets.packagehandler.exceptions.PackageNotFoundException;
+import edu.cmu.sei.dome.cloudlets.packagehandler.exceptions.UnsupportedFileTypeException;
+import edu.cmu.sei.dome.cloudlets.packagehandler.exceptions.WrongOSException;
+
+;
 
 public class FileUploadServlet extends HttpServlet {
 
@@ -90,25 +95,30 @@ public class FileUploadServlet extends HttpServlet {
 		}
 		TimeLog.stamp("File size verified.");
 
+		PackageHandler pkgHandler = new PackageHandler(Commons.MY_OS);
+
+		// decompress
 		push.respond("Decompress\n", true);
-		if (Commons.MY_OS == OS.linux) {
-			FileDecompressor.untargz(f.getAbsolutePath());
-		} else if (Commons.MY_OS == OS.windows) {
-			FileDecompressor.unzip(f.getAbsolutePath());
+		try {
+			pkgHandler.decompress(hash);
+		} catch (PackageNotFoundException e1) {
+			push.error(Commons.PackageNotFoundException);
+			e1.printStackTrace();
 		}
 		TimeLog.stamp("Application decompressed.");
 
 		// try to execute file
 		try {
-			ExecUtil.execute(hash);
+			pkgHandler.execute(hash);
 		} catch (UnsupportedFileTypeException e) {
 			push.error(Commons.UnsupportedFileTypeException);
-			return;
+			e.printStackTrace();
+		} catch (PackageNotFoundException e) {
+			push.error(Commons.PackageNotFoundException);
+			e.printStackTrace();
 		} catch (WrongOSException e) {
 			push.error(Commons.WrongOSException());
-			return;
-		} catch (InterruptedException e) {
-			push.error(Commons.InterruptedException);
+			e.printStackTrace();
 		}
 		TimeLog.stamp("Application executed.");
 		String time = new SimpleDateFormat("yyyy-MM-dd HH-mm ")

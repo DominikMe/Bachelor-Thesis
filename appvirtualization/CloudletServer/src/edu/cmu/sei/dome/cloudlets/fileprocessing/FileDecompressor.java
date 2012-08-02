@@ -5,6 +5,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedInputStream;
@@ -12,6 +13,17 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class FileDecompressor {
+	
+	public static final FilenameFilter zipFilter = new FilenameFilter() {
+		public boolean accept(File dir, String filename) {
+			return (filename.endsWith(".zip"));
+		}
+	};
+	public static final FilenameFilter targzFilter = new FilenameFilter() {
+		public boolean accept(File dir, String filename) {
+			return (filename.endsWith(".tar.gz"));
+		}
+	};
 
 	public static void main(String[] args) throws Exception {
 		// String path = "";// "//media/sf_VirtualApp/";

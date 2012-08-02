@@ -1,6 +1,5 @@
 package edu.cmu.sei.dome.cloudlets.server;
 
-import java.util.ArrayList;
 
 public final class Commons {
 
@@ -21,26 +20,6 @@ public final class Commons {
 				MY_OS.toString(), VERSION);
 	}
 
-	// file types
-	public static final String FILETYPE_EXE = "exe";
-	public static final String FILETYPE_CDE = "cde";
-	public static final String FILETYPE_JAR = "jar";public static final String FILETYPE_REMOTE_INSTALL = "install";
-	@SuppressWarnings("serial")
-	public static final ArrayList<String> linuxTypes = new ArrayList<String>() {
-		{
-			add(FILETYPE_CDE);
-			add(FILETYPE_JAR);
-			add(FILETYPE_REMOTE_INSTALL);
-		}
-	};
-	@SuppressWarnings("serial")
-	public static final ArrayList<String> windowsTypes = new ArrayList<String>() {
-		{
-			add(FILETYPE_EXE);
-			add(FILETYPE_JAR);
-		}
-	};
-
 	// JSON keys
 	public static final String JSON_CHECKSUM = "checksum";
 	public static final String JSON_NAME = "name";
@@ -54,13 +33,9 @@ public final class Commons {
 	public static final String GeneralException = "An exception occurred.";
 	public static final String ChecksumException = "The uploaded file does not match the submitted checksum.";
 	public static final String FilesizeException = "The uploaded file has not the specified size.";
-
+	public static final String PackageNotFoundException = "This application package could not be found.";
 	public static String WrongOSException() {
 		return "The operating system must be " + MY_OS + ".";
 	}
 
-}
-
-enum OS {
-	windows, linux
 }
