@@ -17,8 +17,10 @@ public class PackageHandler {
 		switch (os) {
 		case windows:
 			impl = new WindowsPackageHandler();
+			break;
 		case linux:
 			impl = new LinuxPackageHandler();
+			break;
 		}
 	}
 

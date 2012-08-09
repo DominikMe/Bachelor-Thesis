@@ -86,31 +86,4 @@ public class FileDecompressor {
 		}
 	}
 
-	// not working
-	/*
-	 * public static void zip(String file, String zipFile) { FileOutputStream
-	 * dest; try { String zipPath = new File(file).getParent() + "/" + zipFile;
-	 * zipPath = zipPath.replace('\\', '/'); dest = new
-	 * FileOutputStream(zipPath); CheckedOutputStream checksum = new
-	 * CheckedOutputStream(dest, new Adler32()); ZipOutputStream out = new
-	 * ZipOutputStream(new BufferedOutputStream( checksum));
-	 * zipRecursively(file, out); out.flush(); out.close(); System.out
-	 * .println("checksum: " + checksum.getChecksum().getValue()); } catch
-	 * (FileNotFoundException e) { e.printStackTrace(); } catch (IOException e)
-	 * { e.printStackTrace(); } }
-	 * 
-	 * private static void zipRecursively(String file, ZipOutputStream out)
-	 * throws IOException { final int BUFFER = 2048; BufferedInputStream origin
-	 * = null;
-	 * 
-	 * // out.setMethod(ZipOutputStream.DEFLATED); byte data[] = new
-	 * byte[BUFFER]; // get a list of files from current directory File f = new
-	 * File(file); if (f.isDirectory()) { String files[] = f.list(); for (int i
-	 * = 0; i < files.length; i++) { System.out.println("Adding: " + files[i]);
-	 * zipRecursively(f.getAbsolutePath() + "/" + files[i], out); } } else {
-	 * origin = new BufferedInputStream(new FileInputStream(file), BUFFER);
-	 * ZipEntry entry = new ZipEntry(file); out.putNextEntry(entry); int n;
-	 * while ((n = origin.read(data, 0, BUFFER)) != -1) { out.write(data, 0, n);
-	 * } origin.close(); } }
-	 */
 }

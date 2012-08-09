@@ -3,8 +3,8 @@ bin/
 
 .metadata/
 
-CloudletServer/uploads/
+appvirtualization/CloudletServer/uploads/
 
-CloudletServer/log/
+appvirtualization/CloudletServer/log/
 
 SpeechRecognitionServer/

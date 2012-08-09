@@ -30,7 +30,7 @@ public class WindowsTerminalExecutor extends Executor {
 		String[] cmd_args = Arrays.copyOf(cmd, cmd.length + args.length);
 		System.arraycopy(args, 0, cmd_args, cmd.length, args.length);
 
-		pb.command(cmd);
+		pb.command(cmd_args);
 		return pb.start();
 	}
 }

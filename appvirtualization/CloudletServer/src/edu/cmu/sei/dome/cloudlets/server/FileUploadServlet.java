@@ -109,7 +109,7 @@ public class FileUploadServlet extends HttpServlet {
 
 		// try to execute file
 		try {
-			pkgHandler.execute(hash);
+			pkgHandler.execute(hash).execute(new String[] {});
 		} catch (UnsupportedFileTypeException e) {
 			push.error(Commons.UnsupportedFileTypeException);
 			e.printStackTrace();
