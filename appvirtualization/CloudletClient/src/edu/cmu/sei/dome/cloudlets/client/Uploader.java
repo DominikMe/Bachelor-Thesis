@@ -11,6 +11,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.FileBody;
@@ -36,6 +37,12 @@ public class Uploader {
 		this.cloudletClient = cloudletClient;
 	}
 
+	/**
+	 * REST-POST: Post application metadata.
+	 * 
+	 * @param f
+	 * @param url
+	 */
 	public void postJSON(File f, String url) {
 		new AsyncTask<String, Integer, HttpResponse>() {
 
@@ -71,34 +78,40 @@ public class Uploader {
 
 	}
 
-	public void postFile(final File f, final String checksum, final long size, final String url,
+	/**
+	 * REST-PUT: Upload application.
+	 * 
+	 * @param f
+	 * @param size
+	 * @param url
+	 * @param progressHandler
+	 */
+	public void putFile(final File f, final long size, final String url,
 			final Handler progressHandler) {
 		new AsyncTask<String, Integer, HttpResponse>() {
 
 			@Override
 			protected HttpResponse doInBackground(String... params) {
 
-				HttpPost post = new HttpPost(url);
+				HttpPut put = new HttpPut(url);
 				MultipartEntity mpEntity = new MultipartEntity();
 				ContentBody file = new ProgressFileBody(f, progressHandler);
 				Log.d(TAG, "upload " + f.getAbsolutePath() + " to " + url);
 				try {
 					ContentBody filename = new StringBody(f.getName());
-					ContentBody hash = new StringBody(checksum);
 					ContentBody length = new StringBody("" + size);
 					mpEntity.addPart("file", file);
 					mpEntity.addPart("name", filename);
-					mpEntity.addPart("hash", hash);
 					mpEntity.addPart("size", length);
 				} catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
 					return null;
 				}
-				post.setEntity(mpEntity);
+				put.setEntity(mpEntity);
 
 				HttpResponse response = null;
 				try {
-					response = client.execute(post);
+					response = client.execute(put);
 				} catch (ClientProtocolException e) {
 					e.printStackTrace();
 				} catch (IOException e) {

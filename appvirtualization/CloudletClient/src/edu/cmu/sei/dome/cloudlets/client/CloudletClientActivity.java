@@ -225,13 +225,13 @@ public class CloudletClientActivity extends Activity implements
 	}
 
 	private void upload_JSON_APP(UploadInfo info, InetAddress address, int port) {
-		String url = "http:/" + address + ":" + port + "/";
+		String url = "http:/" + address + ":" + port + "/apps/" + info.checksum;
 		Log.d(TAG, "Send to " + url);
-		uploader.postJSON(info.json, url + "json");
+		uploader.postJSON(info.json, url);
 		progress.setMessage("Uploading " + info.name + "...");
 		progress.show();
-		new EventListener(this, url + "push", info).start();
-		uploader.postFile(info.app, info.checksum, info.size, url + "file",
+		new EventListener(this, url, info).start();
+		uploader.putFile(info.app, info.size, url,
 				progressHandler);
 	}
 }

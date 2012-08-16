@@ -8,15 +8,20 @@ import java.util.Map;
 
 public class TimeLog {
 
-	private static Map<Long, String> stamps = new HashMap<Long, String>();
+	private Map<Long, String> stamps = new HashMap<Long, String>();
+	public final String appId;
+	
+	public TimeLog(String appId) {
+		this.appId = appId;
+	}
 
-	public static void stamp(String tag) {
+	public void stamp(String tag) {
 		long time = System.currentTimeMillis();
 		stamps.put(new Long(time), tag);
 		Log.println("@" + time + ": " + tag);
 	}
 
-	public static void writeToFile(String file) throws IOException {
+	public void writeToFile(String file) throws IOException {
 		String eol = System.lineSeparator();
 		Log.println("Write TimeLog to " + file);
 		FileWriter writer = new FileWriter(file);
@@ -33,8 +38,9 @@ public class TimeLog {
 		writer.close();
 	}
 	
-	public static void reset() {
-		stamps = new HashMap<Long, String>();
+	public void close() {
+		stamps = null;
+		TimeLogStore.close(this.appId);
 	}
 
 }

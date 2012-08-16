@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import edu.cmu.sei.dome.cloudlets.log.Log;
-import edu.cmu.sei.dome.cloudlets.log.TimeLog;
 
 public class InstallExecutor extends LinuxTerminalExecutor {
 
@@ -32,7 +31,6 @@ public class InstallExecutor extends LinuxTerminalExecutor {
 	public Process execute(String... args) throws IOException {
 		try {
 			install(this.cwd).waitFor();
-			TimeLog.stamp("Installation finished.");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -45,7 +43,6 @@ public class InstallExecutor extends LinuxTerminalExecutor {
 	}
 
 	private Process install(File cwd) throws IOException {
-		TimeLog.stamp("Start installation.");
 		Log.println("Start remote installation of: " + cwd.getName());
 
 		ProcessBuilder pb = new ProcessBuilder();

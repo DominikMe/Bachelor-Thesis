@@ -43,10 +43,7 @@ public class CloudletServer {
 		context.setContextPath("/");
 		server.setHandler(context);
 
-		context.addServlet(new ServletHolder(new FileUploadServlet()), "/file");
-		context.addServlet(new ServletHolder(new JSONServlet()), "/json");
-		context.addServlet(new ServletHolder(PushServlet.getInstance()),
-				"/push");
+		context.addServlet(new ServletHolder(new RESTservlet()), "/apps/*");
 
 		// register cloudlet server
 		// JmDNSHelper.registerService(Commons.NAME, Commons.getAttributes());
