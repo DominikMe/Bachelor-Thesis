@@ -10,7 +10,7 @@ import edu.cmu.sei.dome.cloudlets.log.Log;
 
 public class InstallExecutor extends LinuxTerminalExecutor {
 
-	private static final FileFilter executableFilter = new FileFilter() {
+	private static final FileFilter EXECUTABLE_FILTER = new FileFilter() {
 		@Override
 		public boolean accept(File f) {
 			return !f.isDirectory() && f.canExecute();
@@ -19,7 +19,7 @@ public class InstallExecutor extends LinuxTerminalExecutor {
 
 	public InstallExecutor(File pkg) throws FileNotFoundException {
 		super(pkg);
-		File[] fs = pkg.listFiles(executableFilter);
+		File[] fs = pkg.listFiles(EXECUTABLE_FILTER);
 		if (fs.length == 0)
 			throw new FileNotFoundException();
 		this.executable = fs[0];
@@ -28,7 +28,7 @@ public class InstallExecutor extends LinuxTerminalExecutor {
 	}
 
 	@Override
-	public Process execute(String... args) throws IOException {
+	public Process start(String... args) throws IOException {
 		try {
 			install(this.cwd).waitFor();
 		} catch (InterruptedException e) {
@@ -39,7 +39,7 @@ public class InstallExecutor extends LinuxTerminalExecutor {
 		String[] cmd_args = Arrays.copyOf(cmd, cmd.length + args.length);
 		System.arraycopy(args, 0, cmd_args, cmd.length, args.length);
 
-		return super.execute(cmd_args);
+		return super.start(cmd_args);
 	}
 
 	private Process install(File cwd) throws IOException {

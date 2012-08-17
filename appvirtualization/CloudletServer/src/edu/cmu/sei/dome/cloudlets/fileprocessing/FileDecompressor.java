@@ -14,24 +14,16 @@ import java.util.zip.ZipInputStream;
 
 public class FileDecompressor {
 	
-	public static final FilenameFilter zipFilter = new FilenameFilter() {
+	public static final FilenameFilter ZIP_FILTER = new FilenameFilter() {
 		public boolean accept(File dir, String filename) {
 			return (filename.endsWith(".zip"));
 		}
 	};
-	public static final FilenameFilter targzFilter = new FilenameFilter() {
+	public static final FilenameFilter TARGZ_FILTER = new FilenameFilter() {
 		public boolean accept(File dir, String filename) {
 			return (filename.endsWith(".tar.gz"));
 		}
 	};
-
-	public static void main(String[] args) throws Exception {
-		// String path = "";// "//media/sf_VirtualApp/";
-		String path = "C:/Users/Dome/Programmieren/Studium/Bachelorarbeit/SEI/SEIcloudlets/Cloudlet/CloudletServer/uploads/md5/";
-		// zip(path + "_2moped-cde", "testmoped-cde.zip");
-		// System.out.println(new File(path).getParent());
-		unzip(path + "SpeechRecognition.zip");
-	}
 
 	public static void untargz(String archive) {
 		// archive is absolute path
@@ -51,7 +43,7 @@ public class FileDecompressor {
 		ZipInputStream zis = null;
 		try {
 			final int BUFFER = 2048;
-			byte data[] = new byte[BUFFER];
+			byte [] data = new byte[BUFFER];
 			String dest = new File(archive).getParent();
 			FileInputStream fis = new FileInputStream(archive);
 			CheckedInputStream checksum = new CheckedInputStream(fis,

@@ -1,16 +1,19 @@
 package edu.cmu.sei.dome.cloudlets.server;
 
 import java.io.File;
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.util.Vector;
+import java.net.UnknownHostException;
+import java.util.Enumeration;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
+import edu.cmu.sei.dome.cloudlets.constants.Commons;
+import edu.cmu.sei.dome.cloudlets.constants.OS;
 import edu.cmu.sei.dome.cloudlets.jmdns.JmDNSRegistrar;
-import edu.cmu.sei.dome.cloudlets.jmdns.NetworkUtil;
 import edu.cmu.sei.dome.cloudlets.log.Log;
 
 public class CloudletServer {
@@ -23,12 +26,13 @@ public class CloudletServer {
 			Commons.MY_OS = OS.linux;
 		} else if (osname.toLowerCase().contains(OS.windows.name())) {
 			Commons.MY_OS = OS.windows;
-		} else
+		} else {
 			throw new IllegalArgumentException();
+		}
 
 		Log.println("Detected a " + Commons.MY_OS + " system.");
 
-		// make directories if they not yet exist
+		// make directories if they do not exist
 		File store = new File(Commons.STORE);
 		if (!store.isDirectory())
 			store.mkdirs();
@@ -51,13 +55,9 @@ public class CloudletServer {
 		if (args.length > 0) {
 			String intfName = args[0];
 			final NetworkInterface intf = NetworkInterface.getByName(intfName);
-			if (intf != null && intf.isUp()) {
-				address = NetworkUtil
-						.filterInet4Adresses(new Vector<NetworkInterface>() {
-							{
-								add(intf);
-							}
-						}).iterator().next();
+
+			if (intf != null && intf.isUp() && intf.supportsMulticast()) {
+				address = getInet4Address(intf);
 			}
 		}
 		if (address == null)
@@ -70,4 +70,16 @@ public class CloudletServer {
 		server.start();
 		server.join();
 	}
+
+	private static InetAddress getInet4Address(final NetworkInterface intf)
+			throws UnknownHostException {
+		Enumeration<InetAddress> addrs = intf.getInetAddresses();
+		while (addrs.hasMoreElements()) {
+			InetAddress ad = addrs.nextElement();
+			if (ad instanceof Inet4Address)
+				return ad;
+		}
+		return null;
+	}
+	
 }

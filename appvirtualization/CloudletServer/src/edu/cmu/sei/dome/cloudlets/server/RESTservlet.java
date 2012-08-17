@@ -23,7 +23,8 @@ import org.eclipse.jetty.continuation.Continuation;
 import org.eclipse.jetty.continuation.ContinuationSupport;
 import org.eclipse.jetty.util.ajax.JSON;
 
-import edu.cmu.sei.dome.cloudlets.fileprocessing.Utils;
+import edu.cmu.sei.dome.cloudlets.constants.Commons;
+import edu.cmu.sei.dome.cloudlets.fileprocessing.FileUtils;
 import edu.cmu.sei.dome.cloudlets.log.Log;
 import edu.cmu.sei.dome.cloudlets.log.TimeLog;
 import edu.cmu.sei.dome.cloudlets.log.TimeLogStore;
@@ -35,14 +36,14 @@ import edu.cmu.sei.dome.cloudlets.packagehandler.exceptions.WrongOSException;
 public class RESTservlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-	private static final FilenameFilter archiveFilter = new FilenameFilter() {
+	private static final FilenameFilter ARCHIVE_FILTER = new FilenameFilter() {
 		public boolean accept(File dir, String filename) {
 			return (filename.endsWith(".zip") || filename.endsWith(".tar.gz"));
 		}
 	};
 
 	/**
-	 * Return status of an application, REST-GET
+	 * Return status of an application. REST-GET
 	 * 
 	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest
 	 *      , javax.servlet.http.HttpServletResponse)
@@ -72,8 +73,8 @@ public class RESTservlet extends HttpServlet {
 		String appId = req.getPathInfo().substring(1);
 
 		Part upload = req.getPart("file");
-		String name = Utils.readString(req.getPart("name"));
-		long size = Long.parseLong(Utils.readString(req.getPart("size")));
+		String name = readString(req.getPart("name"));
+		long size = Long.parseLong(readString(req.getPart("size")));
 
 		Log.println(appId, "FileServlet.doPost has been triggered.");
 		TimeLog timeLog = TimeLogStore.getTimeLog(appId);
@@ -90,20 +91,20 @@ public class RESTservlet extends HttpServlet {
 		PushHandler push = PushHandlerStore.getPushHandler(appId);
 
 		// copy file to store
-		File f = copyFileToStore(name, appId, upload);
-		if (f == null) {
+		if (!ARCHIVE_FILTER.accept(null, name)) {
 			push.error("The uploaded application must be either a .zip or .tar.gz archive.");
 			return;
 		}
+		File f = FileUtils.saveUpload(upload, name, appId);
 		timeLog.stamp("Application upload finished.");
 
 		// check md5hash
 		try {
-			String checkhash = Utils.md5hash(f);
+			String checkhash = FileUtils.md5hash(f);
 			if (!appId.equals(checkhash)) {
 				push.error(Commons.ChecksumException);
 				// backtrack: delete application folder
-				Utils.deleteRecursively(new File(Commons.STORE + appId));
+				FileUtils.deleteRecursively(new File(Commons.STORE + appId));
 				return;
 			}
 		} catch (NoSuchAlgorithmException e1) {
@@ -117,12 +118,12 @@ public class RESTservlet extends HttpServlet {
 		if (size != f.length()) {
 			push.error(Commons.FilesizeException);
 			// backtrack: delete application folder
-			Utils.deleteRecursively(new File(Commons.STORE + appId));
+			FileUtils.deleteRecursively(new File(Commons.STORE + appId));
 			return;
 		}
 		timeLog.stamp("File size verified.");
 
-		PackageHandler pkgHandler = new PackageHandler(Commons.MY_OS);
+		PackageHandler pkgHandler = PackageHandler.getInstance(Commons.MY_OS);
 
 		// decompress
 		push.respond("Decompress\n", true);
@@ -136,7 +137,7 @@ public class RESTservlet extends HttpServlet {
 
 		// try to execute file
 		try {
-			pkgHandler.execute(appId).execute(new String[] {});
+			pkgHandler.execute(appId).start();
 		} catch (UnsupportedFileTypeException e) {
 			push.error(Commons.UnsupportedFileTypeException);
 			e.printStackTrace();
@@ -154,6 +155,7 @@ public class RESTservlet extends HttpServlet {
 		timeLog.close();
 
 		push.respond("Execute\n", false);
+		push.close();
 	}
 
 	/**
@@ -170,9 +172,9 @@ public class RESTservlet extends HttpServlet {
 
 		TimeLog timeLog = TimeLogStore.getTimeLog(appId);
 		timeLog.stamp("JSON upload started.");
-		Part json_upload = req.getPart("json");
+		Part jsonUpload = req.getPart("json");
 		BufferedReader r = new BufferedReader(new InputStreamReader(
-				json_upload.getInputStream()));
+				jsonUpload.getInputStream()));
 
 		// parse json file
 		@SuppressWarnings("unchecked")
@@ -189,12 +191,11 @@ public class RESTservlet extends HttpServlet {
 
 		// copy json to store
 		File dir = new File(Commons.STORE + j.get(Commons.JSON_CHECKSUM));
-		Utils.deleteRecursively(dir);
+		FileUtils.deleteRecursively(dir);
 
 		dir.mkdir();
-		Utils.writeInputStreamToFile(json_upload.getInputStream(),
-				dir.getAbsolutePath() + "/" + j.get(Commons.JSON_NAME)
-						+ ".json");
+		FileUtils.saveUpload(jsonUpload, j.get(Commons.JSON_NAME) + ".json",
+				"" + j.get(Commons.JSON_CHECKSUM));
 
 		timeLog.stamp("JSON saved to disk.");
 
@@ -205,14 +206,6 @@ public class RESTservlet extends HttpServlet {
 		resp.setStatus(HttpServletResponse.SC_OK);
 		resp.getWriter().write(sb.toString());
 
-	}
-
-	private File copyFileToStore(String name, String hash, Part upload)
-			throws IOException {
-		if (!archiveFilter.accept(null, name)) {
-			return null;
-		}
-		return Utils.uploadFile(upload, name, Commons.STORE + "/" + hash + "/");
 	}
 
 	/**
@@ -227,10 +220,18 @@ public class RESTservlet extends HttpServlet {
 		// get application ID, strip first character, i.e. slash
 		String appId = req.getPathInfo().substring(1);
 
-		Utils.deleteRecursively(new File(Commons.STORE + appId));
+		FileUtils.deleteRecursively(new File(Commons.STORE + appId));
 		resp.setContentType("text/html");
 		resp.setStatus(HttpServletResponse.SC_OK);
 		resp.getWriter().write("Application " + appId + " has been deleted.");
+	}
+
+	private String readString(Part name) throws IOException {
+		BufferedReader r = new BufferedReader(new InputStreamReader(
+				name.getInputStream()));
+		String filename = r.readLine();
+		r.close();
+		return filename;
 	}
 
 }

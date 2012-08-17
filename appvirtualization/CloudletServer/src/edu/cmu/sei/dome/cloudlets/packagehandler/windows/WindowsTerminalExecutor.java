@@ -20,8 +20,9 @@ public class WindowsTerminalExecutor extends Executor {
 	}
 
 	@Override
-	public Process execute(String... args) throws IOException {
+	public Process start(String... args) throws IOException {
 		ProcessBuilder pb = new ProcessBuilder();
+		pb.inheritIO();
 		pb.directory(cwd);
 		Log.println("CWD: " + pb.directory().getAbsolutePath());
 

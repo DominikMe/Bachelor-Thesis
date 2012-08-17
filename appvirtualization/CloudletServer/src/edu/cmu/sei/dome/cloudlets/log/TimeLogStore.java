@@ -2,7 +2,7 @@ package edu.cmu.sei.dome.cloudlets.log;
 
 import java.util.HashMap;
 
-public class TimeLogStore {
+public final class TimeLogStore {
 
 	private static HashMap<String, TimeLog> timeLogs = new HashMap<String, TimeLog>();
 
@@ -18,7 +18,7 @@ public class TimeLogStore {
 		return tlog;
 	}
 
-	public static synchronized void close(String appId) {
+	static synchronized void close(String appId) {
 		timeLogs.remove(appId);
 	}
 }

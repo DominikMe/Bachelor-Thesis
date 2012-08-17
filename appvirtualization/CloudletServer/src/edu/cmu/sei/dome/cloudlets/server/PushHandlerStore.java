@@ -14,5 +14,9 @@ public class PushHandlerStore {
 		}
 		return push;
 	}
+	
+	static synchronized void close(String appId) {
+		pushs.remove(appId);
+	}
 
 }

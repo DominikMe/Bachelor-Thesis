@@ -42,10 +42,10 @@ public class JmDNSRegistrar {
 			try {
 				JmDNS mdnsServer = JmDNS.create(JmDNSRegistrar.this.address,
 						JmDNSRegistrar.this.name);
-				ServiceInfo service = ServiceInfo.create("_http._tcp.local.",
+				ServiceInfo serviceInfo = ServiceInfo.create("_http._tcp.local.",
 						JmDNSRegistrar.this.name, JmDNSRegistrar.this.port,
 						JmDNSRegistrar.this.description);
-				mdnsServer.registerService(service);
+				mdnsServer.registerService(serviceInfo);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

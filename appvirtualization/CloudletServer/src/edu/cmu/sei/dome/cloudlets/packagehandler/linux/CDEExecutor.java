@@ -10,7 +10,7 @@ import edu.cmu.sei.dome.cloudlets.log.Log;
 
 public class CDEExecutor extends LinuxTerminalExecutor {
 
-	private static final FilenameFilter cdeFilter = new FilenameFilter() {
+	private static final FilenameFilter CDE_FILTER = new FilenameFilter() {
 		public boolean accept(File dir, String filename) {
 			return (filename.endsWith(".cde"));
 		}
@@ -18,7 +18,7 @@ public class CDEExecutor extends LinuxTerminalExecutor {
 
 	public CDEExecutor(File pkg) throws FileNotFoundException {
 		super(pkg);
-		File[] fs = pkg.listFiles(cdeFilter);
+		File[] fs = pkg.listFiles(CDE_FILTER);
 		if (fs.length == 0)
 			throw new FileNotFoundException();
 		this.executable = fs[0];
@@ -27,12 +27,12 @@ public class CDEExecutor extends LinuxTerminalExecutor {
 	}
 
 	@Override
-	public Process execute(String... args) throws IOException {
+	public Process start(String... args) throws IOException {
 		String[] cmd = new String[] { "./" + executable.getName() };
 		String[] cmd_args = Arrays.copyOf(cmd, cmd.length + args.length);
 		System.arraycopy(args, 0, cmd_args, cmd.length, args.length);
 
-		return super.execute(cmd_args);
+		return super.start(cmd_args);
 	}
 
 }

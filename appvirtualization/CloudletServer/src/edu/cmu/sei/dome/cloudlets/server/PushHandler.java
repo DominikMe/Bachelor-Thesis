@@ -5,7 +5,9 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import javax.servlet.http.HttpServletResponse;
+
 import org.eclipse.jetty.continuation.Continuation;
+
 import edu.cmu.sei.dome.cloudlets.log.Log;
 
 /**
@@ -87,6 +89,11 @@ public class PushHandler {
 		}
 		Log.println(appId, "Response in queue");
 		return queue.poll();
+	}
+
+	public void close() {
+		queue = null;
+		PushHandlerStore.close(this.appId);
 	}
 
 }

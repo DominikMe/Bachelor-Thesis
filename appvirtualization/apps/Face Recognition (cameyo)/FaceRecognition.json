@@ -1,0 +1,9 @@
+{
+	"name": "FaceRecognitionCameyo",
+	"checksum": "e1f48235a0074c81c2a7ae6ee5b2ac0c",
+	"size": 13725349,
+	"os": "windows",
+	"type": "cameyo",
+	"package": "edu.cmu.sei.rtss.cloudlet.facerec",
+	"port": 9876
+}

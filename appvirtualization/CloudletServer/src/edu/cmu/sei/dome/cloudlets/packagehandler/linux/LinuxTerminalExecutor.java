@@ -19,16 +19,17 @@ public class LinuxTerminalExecutor extends Executor {
 	}
 
 	@Override
-	public Process execute(String... args) throws IOException {
+	public Process start(String... args) throws IOException {
 		ProcessBuilder pb = new ProcessBuilder();
+		pb.inheritIO();
 		pb.directory(cwd);
-		Log.println("CWD: " + pb.directory().getAbsolutePath());
-		
+		Log.println("CWD: " + pb.directory().getAbsolutePath() + "/");
+
 		String[] cmd = new String[] { TERMINAL, TERMINAL_EXECFLAG };
 		String[] cmd_args = Arrays.copyOf(cmd, cmd.length + args.length);
 		System.arraycopy(args, 0, cmd_args, cmd.length, args.length);
 
-		pb.command(cmd);
+		pb.command(cmd_args);
 		return pb.start();
 	}
 

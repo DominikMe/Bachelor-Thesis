@@ -8,15 +8,15 @@ import java.util.Map;
 
 import org.eclipse.jetty.util.ajax.JSON;
 
+import edu.cmu.sei.dome.cloudlets.constants.Commons;
 import edu.cmu.sei.dome.cloudlets.packagehandler.exceptions.PackageNotFoundException;
-import edu.cmu.sei.dome.cloudlets.server.Commons;
 
-public class PackageInfo {
+public final class PackageInfo {
 
 	public final String os;
 	public final String type;
 
-	public static final FilenameFilter jsonFilter = new FilenameFilter() {
+	public static final FilenameFilter JSON_FILTER = new FilenameFilter() {
 		public boolean accept(File dir, String filename) {
 			return (filename.endsWith(".json"));
 		}
@@ -32,7 +32,7 @@ public class PackageInfo {
 		File pkg = new File(Commons.STORE + pkgId);
 		if (!pkg.isDirectory())
 			throw new PackageNotFoundException();
-		File[] fs = pkg.listFiles(PackageInfo.jsonFilter);
+		File[] fs = pkg.listFiles(PackageInfo.JSON_FILTER);
 		if (fs.length == 0)
 			throw new PackageNotFoundException();
 		File json = fs[0];

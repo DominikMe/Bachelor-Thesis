@@ -2,18 +2,19 @@ package edu.cmu.sei.dome.cloudlets.packagehandler;
 
 import java.io.FileNotFoundException;
 
+import edu.cmu.sei.dome.cloudlets.constants.OS;
 import edu.cmu.sei.dome.cloudlets.packagehandler.exceptions.PackageNotFoundException;
 import edu.cmu.sei.dome.cloudlets.packagehandler.exceptions.UnsupportedFileTypeException;
 import edu.cmu.sei.dome.cloudlets.packagehandler.exceptions.WrongOSException;
 import edu.cmu.sei.dome.cloudlets.packagehandler.linux.LinuxPackageHandler;
 import edu.cmu.sei.dome.cloudlets.packagehandler.windows.WindowsPackageHandler;
-import edu.cmu.sei.dome.cloudlets.server.OS;
 
-public class PackageHandler {
+public final class PackageHandler {
 
-	PackageHandlerImpl impl;
+	private PackageHandlerImpl impl;
+	private static PackageHandler instance;
 
-	public PackageHandler(OS os) {
+	private PackageHandler(OS os) {
 		switch (os) {
 		case windows:
 			impl = new WindowsPackageHandler();
@@ -22,6 +23,24 @@ public class PackageHandler {
 			impl = new LinuxPackageHandler();
 			break;
 		}
+	}
+
+	public static synchronized PackageHandler getInstance(OS os) {
+		switch (os) {
+		case windows:
+			if ((instance == null)
+					|| !(instance.impl instanceof WindowsPackageHandler)) {
+				instance = new PackageHandler(os);
+			}
+			return instance;
+		case linux:
+			if ((instance == null)
+					|| !(instance.impl instanceof LinuxPackageHandler)) {
+				instance = new PackageHandler(os);
+			}
+			return instance;
+		}
+		return null;
 	}
 
 	public void decompress(String pkgId) throws PackageNotFoundException {

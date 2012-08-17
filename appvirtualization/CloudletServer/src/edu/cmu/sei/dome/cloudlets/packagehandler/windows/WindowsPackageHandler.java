@@ -3,6 +3,8 @@ package edu.cmu.sei.dome.cloudlets.packagehandler.windows;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import edu.cmu.sei.dome.cloudlets.constants.Commons;
+import edu.cmu.sei.dome.cloudlets.constants.OS;
 import edu.cmu.sei.dome.cloudlets.fileprocessing.FileDecompressor;
 import edu.cmu.sei.dome.cloudlets.log.Log;
 import edu.cmu.sei.dome.cloudlets.packagehandler.Executor;
@@ -11,8 +13,6 @@ import edu.cmu.sei.dome.cloudlets.packagehandler.PackageInfo;
 import edu.cmu.sei.dome.cloudlets.packagehandler.exceptions.PackageNotFoundException;
 import edu.cmu.sei.dome.cloudlets.packagehandler.exceptions.UnsupportedFileTypeException;
 import edu.cmu.sei.dome.cloudlets.packagehandler.exceptions.WrongOSException;
-import edu.cmu.sei.dome.cloudlets.server.Commons;
-import edu.cmu.sei.dome.cloudlets.server.OS;
 
 public class WindowsPackageHandler implements PackageHandlerImpl {
 
@@ -21,7 +21,7 @@ public class WindowsPackageHandler implements PackageHandlerImpl {
 		File pkg = new File(Commons.STORE + pkgId);
 		if (!pkg.isDirectory())
 			throw new PackageNotFoundException();
-		File[] fs = pkg.listFiles(FileDecompressor.zipFilter);
+		File[] fs = pkg.listFiles(FileDecompressor.ZIP_FILTER);
 		if (fs.length == 0)
 			throw new PackageNotFoundException();
 		File archive = fs[0];
@@ -47,7 +47,7 @@ public class WindowsPackageHandler implements PackageHandlerImpl {
 		}
 		Log.println("Filetype is " + info.type + ".");
 		
-		File[] fs = pkg.listFiles(Executor.directoryFilter);
+		File[] fs = pkg.listFiles(Executor.DIRECTORY_FILTER);
 		if (fs.length == 0)
 			throw new PackageNotFoundException();
 		File pkgDir = fs[0];

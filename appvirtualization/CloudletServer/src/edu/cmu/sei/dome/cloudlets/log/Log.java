@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.cmu.sei.dome.cloudlets.server.Commons;
+import edu.cmu.sei.dome.cloudlets.constants.Commons;
 
-public class Log {
+public final class Log {
 
 	private static Map<String, ArrayList<String>> logbook = new HashMap<String, ArrayList<String>>();
 	private static final String GENERAL_TAG = "";
