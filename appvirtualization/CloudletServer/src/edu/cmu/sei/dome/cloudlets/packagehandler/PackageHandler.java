@@ -43,13 +43,13 @@ public final class PackageHandler {
 		return null;
 	}
 
-	public void decompress(String pkgId) throws PackageNotFoundException {
-		impl.decompress(pkgId);
+	public void decompress(String appId) throws PackageNotFoundException {
+		impl.decompress(appId);
 	}
 
-	public Executor execute(String pkgId) throws UnsupportedFileTypeException,
+	public Executor execute(String appId) throws UnsupportedFileTypeException,
 			PackageNotFoundException, WrongOSException, FileNotFoundException {
-		return impl.execute(pkgId);
+		return impl.execute(appId);
 	}
 
 }

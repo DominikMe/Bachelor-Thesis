@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -43,18 +44,18 @@ public class Uploader {
 	 * @param f
 	 * @param url
 	 */
-	public void postJSON(File f, String url) {
+	public void postJSON(final UploadInfo info, final String url) {
 		new AsyncTask<String, Integer, HttpResponse>() {
 
 			@Override
 			protected HttpResponse doInBackground(String... params) {
-				HttpPost post = new HttpPost(params[1]);
+				HttpPost post = new HttpPost(url);
 				MultipartEntity mpEntity = new MultipartEntity();
-				ContentBody file = new FileBody(new File(params[0]));
+				ContentBody file = new FileBody(info.json);
 				mpEntity.addPart("json", file);
 				post.setEntity(mpEntity);
 
-				Log.d(TAG, "upload " + params[0] + " to " + params[1]);
+				Log.d(TAG, "upload " + info.json.getName() + " to " + url);
 				HttpResponse response = null;
 				try {
 					response = client.execute(post);
@@ -62,19 +63,34 @@ public class Uploader {
 					e.printStackTrace();
 				} catch (IOException e) {
 					e.printStackTrace();
-					Log.e(TAG, "Could not reach " + params[1] + "!");
-					cloudletClient.error("Could not reach " + params[1] + "!");
+					Log.e(TAG, "Could not reach " + url + "!");
+					cloudletClient.error("Could not reach " + url + "!");
 					return null;
 				}
 				return response;
 			}
 
 			protected void onPostExecute(HttpResponse result) {
-				if (result != null)
-					cloudletClient.showToast(HttpUtil.getContent(result));
+				if (result != null) {
+					String content = HttpUtil.getContent(result);
+					cloudletClient.showToast(content);
+					int status = result.getStatusLine().getStatusCode(); 
+					if (status == HttpStatus.SC_GONE) {
+						String address = HttpUtil.getIPAddressFromURL(url);
+						int port = Integer.parseInt(HttpUtil
+								.parseFinalResponse(content).get(
+										HttpUtil.PORT_KEY));
+						cloudletClient
+								.showToast("Application already deployed.\nStarted on port "
+										+ port);
+						cloudletClient.startApp(info.client_pkg, address, port);
+					} else if (status == HttpStatus.SC_OK){
+						cloudletClient.uploadApplication(info, url);
+					}
+				}
 			};
 
-		}.execute(f.getAbsolutePath(), url);
+		}.execute();
 
 	}
 
@@ -86,7 +102,7 @@ public class Uploader {
 	 * @param url
 	 * @param progressHandler
 	 */
-	public void putFile(final File f, final long size, final String url,
+	public void putFile(final UploadInfo info, final String url,
 			final Handler progressHandler) {
 		new AsyncTask<String, Integer, HttpResponse>() {
 
@@ -95,11 +111,13 @@ public class Uploader {
 
 				HttpPut put = new HttpPut(url);
 				MultipartEntity mpEntity = new MultipartEntity();
-				ContentBody file = new ProgressFileBody(f, progressHandler);
-				Log.d(TAG, "upload " + f.getAbsolutePath() + " to " + url);
+				ContentBody file = new ProgressFileBody(info.app,
+						progressHandler);
+				Log.d(TAG, "upload " + info.app.getAbsolutePath() + " to "
+						+ url);
 				try {
-					ContentBody filename = new StringBody(f.getName());
-					ContentBody length = new StringBody("" + size);
+					ContentBody filename = new StringBody(info.app.getName());
+					ContentBody length = new StringBody("" + info.size);
 					mpEntity.addPart("file", file);
 					mpEntity.addPart("name", filename);
 					mpEntity.addPart("size", length);
@@ -123,11 +141,8 @@ public class Uploader {
 			}
 
 			protected void onPostExecute(HttpResponse result) {
-				if (result != null) {
+				if (result != null)
 					cloudletClient.showToast(HttpUtil.getContent(result));
-				}
-				// cloudletClient
-				// .startApp("edu.cmu.cs.cloudlet.android.application");
 			};
 
 		}.execute();
@@ -183,7 +198,7 @@ public class Uploader {
 			handler.sendMessage(msg);
 		}
 	}
-	
+
 	class UploadInfo {
 		String name;
 		String checksum;

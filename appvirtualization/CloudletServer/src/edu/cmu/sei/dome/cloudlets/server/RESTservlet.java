@@ -8,10 +8,6 @@ import java.io.InputStreamReader;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,7 +17,6 @@ import javax.servlet.http.Part;
 
 import org.eclipse.jetty.continuation.Continuation;
 import org.eclipse.jetty.continuation.ContinuationSupport;
-import org.eclipse.jetty.util.ajax.JSON;
 
 import edu.cmu.sei.dome.cloudlets.constants.Commons;
 import edu.cmu.sei.dome.cloudlets.fileprocessing.FileUtils;
@@ -29,6 +24,7 @@ import edu.cmu.sei.dome.cloudlets.log.Log;
 import edu.cmu.sei.dome.cloudlets.log.TimeLog;
 import edu.cmu.sei.dome.cloudlets.log.TimeLogStore;
 import edu.cmu.sei.dome.cloudlets.packagehandler.PackageHandler;
+import edu.cmu.sei.dome.cloudlets.packagehandler.PackageInfo;
 import edu.cmu.sei.dome.cloudlets.packagehandler.exceptions.PackageNotFoundException;
 import edu.cmu.sei.dome.cloudlets.packagehandler.exceptions.UnsupportedFileTypeException;
 import edu.cmu.sei.dome.cloudlets.packagehandler.exceptions.WrongOSException;
@@ -124,9 +120,10 @@ public class RESTservlet extends HttpServlet {
 		timeLog.stamp("File size verified.");
 
 		PackageHandler pkgHandler = PackageHandler.getInstance(Commons.MY_OS);
+		PackageInfo info = null;
 
 		// decompress
-		push.respond("Decompress\n", true);
+		push.respond("Decompress\n");
 		try {
 			pkgHandler.decompress(appId);
 		} catch (PackageNotFoundException e1) {
@@ -137,7 +134,9 @@ public class RESTservlet extends HttpServlet {
 
 		// try to execute file
 		try {
+			// start application without arguments
 			pkgHandler.execute(appId).start();
+			info = PackageInfo.getPackageInfo(appId);
 		} catch (UnsupportedFileTypeException e) {
 			push.error(Commons.UnsupportedFileTypeException);
 			e.printStackTrace();
@@ -154,7 +153,13 @@ public class RESTservlet extends HttpServlet {
 		timeLog.writeToFile(Commons.LOG + time + name + ".txt");
 		timeLog.close();
 
-		push.respond("Execute\n", false);
+		push.respond("Execute\n");
+
+		// STUB
+		// Just returns the port from the package info. Some advanced logic on
+		// what port to run the application and then send this port back to the
+		// mobile client would be great.
+		push.finish(info.port);
 		push.close();
 	}
 
@@ -170,41 +175,56 @@ public class RESTservlet extends HttpServlet {
 		// get application ID, strip first character, i.e. slash
 		String appId = req.getPathInfo().substring(1);
 
+		resp.setContentType("text/html");
+		
+		// APPLICATION IS CACHED
+		if (new File(Commons.STORE + appId).isDirectory()) {
+			PackageHandler pkgHandler = PackageHandler
+					.getInstance(Commons.MY_OS);
+			try {
+				PackageInfo info = PackageInfo.getPackageInfo(appId);
+				pkgHandler.execute(appId).start();
+				// tell client to use existing package
+				Log.println(appId, "Execute cached application.");
+				resp.setStatus(HttpServletResponse.SC_GONE);
+				resp.getWriter().write(String.format("port:%d", info.port));
+				
+				return;
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				// let client upload and overwrite existing malfunctioning
+				// package
+				Log.println(appId, "Cached application is broken.");
+			}
+		}
+		
+		// NEW APPLICATION - NOT CACHED
+		Log.println(appId, "Application not cached, wait for upload.");
+
 		TimeLog timeLog = TimeLogStore.getTimeLog(appId);
 		timeLog.stamp("JSON upload started.");
-		Part jsonUpload = req.getPart("json");
-		BufferedReader r = new BufferedReader(new InputStreamReader(
-				jsonUpload.getInputStream()));
 
 		// parse json file
-		@SuppressWarnings("unchecked")
-		Map<String, Object> j = (HashMap<String, Object>) JSON.parse(r);
-
-		// DEBUG
-		StringBuilder sb = new StringBuilder();
-		Iterator<Entry<String, Object>> it = j.entrySet().iterator();
-		while (it.hasNext()) {
-			Entry<String, Object> e = (Entry<String, Object>) it.next();
-			sb.append(e.getKey() + ": " + e.getValue() + "\n");
-		}
+		Part jsonUpload = req.getPart("json");
+		PackageInfo info = PackageInfo.getPackageInfo(jsonUpload
+				.getInputStream());
 		timeLog.stamp("JSON has been parsed.");
 
 		// copy json to store
-		File dir = new File(Commons.STORE + j.get(Commons.JSON_CHECKSUM));
+		File dir = new File(Commons.STORE + appId);
 		FileUtils.deleteRecursively(dir);
 
 		dir.mkdir();
-		FileUtils.saveUpload(jsonUpload, j.get(Commons.JSON_NAME) + ".json",
-				"" + j.get(Commons.JSON_CHECKSUM));
+		FileUtils.saveUpload(jsonUpload, info.name + ".json", ""
+				+ info.checksum);
 
 		timeLog.stamp("JSON saved to disk.");
 
 		Log.println(appId, "Received json:");
-		Log.println(appId, sb.toString());
-
-		resp.setContentType("text/html");
+		Log.println(appId, info);
 		resp.setStatus(HttpServletResponse.SC_OK);
-		resp.getWriter().write(sb.toString());
+		resp.getWriter().write(info.toString());
 
 	}
 

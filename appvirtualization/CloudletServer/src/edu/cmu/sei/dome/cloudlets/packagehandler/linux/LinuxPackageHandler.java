@@ -17,8 +17,8 @@ import edu.cmu.sei.dome.cloudlets.packagehandler.exceptions.WrongOSException;
 public class LinuxPackageHandler implements PackageHandlerImpl {
 
 	@Override
-	public void decompress(String pkgId) throws PackageNotFoundException {
-		File pkg = new File(Commons.STORE + pkgId);
+	public void decompress(String appId) throws PackageNotFoundException {
+		File pkg = new File(Commons.STORE + appId);
 		if (!pkg.isDirectory())
 			throw new PackageNotFoundException();
 		File[] fs = pkg.listFiles(FileDecompressor.TARGZ_FILTER);
@@ -32,13 +32,13 @@ public class LinuxPackageHandler implements PackageHandlerImpl {
 	private static final String JAR = "jar";
 
 	@Override
-	public Executor execute(String pkgId) throws UnsupportedFileTypeException,
+	public Executor execute(String appId) throws UnsupportedFileTypeException,
 			PackageNotFoundException, WrongOSException, FileNotFoundException {
-		File pkg = new File(Commons.STORE + pkgId);
+		File pkg = new File(Commons.STORE + appId);
 		if (!pkg.isDirectory())
 			throw new PackageNotFoundException();
 
-		PackageInfo info = PackageInfo.getPackageInfo(pkgId);
+		PackageInfo info = PackageInfo.getPackageInfo(appId);
 		Log.println("Compare OS: " + info.os + " ?= linux");
 		if (!info.os.toLowerCase().equals(OS.linux.toString())) {
 			throw new WrongOSException();

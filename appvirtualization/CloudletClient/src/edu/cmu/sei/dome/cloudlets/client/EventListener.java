@@ -1,7 +1,6 @@
 package edu.cmu.sei.dome.cloudlets.client;
 
 import java.io.IOException;
-import java.net.InetAddress;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -35,31 +34,32 @@ public class EventListener extends Thread {
 	@Override
 	public void run() {
 		while (running) {
+			Log.d(TAG, "Listen for Server PUSH");
 			HttpGet get = new HttpGet(url);
 			HttpResponse response = null;
 			try {
 				response = client.execute(get);
+				String content = HttpUtil.getContent(response);
 				if ((response != null) && (response.getEntity() != null))
-					showResponse(response);
+					showResponse(content);
 
 				// no follow up - server finished 'connection'
 				if (response.getStatusLine().getStatusCode() == HttpStatus.SC_GONE) {
 					Log.d(TAG, "Stop listening for Server PUSH");
 					stopListening();
-					// start App Client
-					CloudletApplication cloudlet = (CloudletApplication) cloudletClient
-							.getApplication();
 
-					InetAddress address = null;
-					if (info.os
-							.equals(cloudletClient.getString(R.string.linux)))
-						address = cloudlet.getLinuxServerAddress();
-					else if (info.os.equals(cloudletClient
-							.getString(R.string.windows)))
-						address = cloudlet.getWindowsServerAddress();
-					this.cloudletClient.startApp(this.info.client_pkg,
-							address.getHostAddress(), info.port);
-					break;
+					// start App Client
+
+					// get top level domain out of entire url
+					String addr = HttpUtil.getIPAddressFromURL(url);
+					// get port from cloudlet message
+					int port = Integer.parseInt(HttpUtil.parseFinalResponse(
+							content).get(HttpUtil.PORT_KEY));
+					this.cloudletClient.showToast("Started on port " + port);
+
+					this.cloudletClient.startApp(this.info.client_pkg, addr,
+							port);
+					return;
 				}
 			} catch (ClientProtocolException e) {
 				e.printStackTrace();
@@ -73,10 +73,9 @@ public class EventListener extends Thread {
 		this.running = false;
 	}
 
-	public void showResponse(final HttpResponse response) {
-		String content = HttpUtil.getContent(response);
+	public void showResponse(String content) {
 		if (content == null) {
-			cloudletClient.error("IOException when reading HtppResponse!");
+			cloudletClient.error("IOException when reading HttpResponse!");
 		} else
 			cloudletClient.showToast(content);
 	}

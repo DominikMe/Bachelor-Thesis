@@ -37,15 +37,17 @@ public class PushHandler {
 		queue.add(continuation);
 	}
 
-	public void respond(String message, boolean keepalive) throws IOException {
+	private void pushToClient(String message, boolean keepalive)
+			throws IOException {
 		Log.println(appId, "Respond: " + message);
 		if (message == null || message.equals(""))
 			return;
 		Continuation continuation = waitForClient();
-		if(continuation == null)
+		if (continuation == null)
 			return;
 
-		HttpServletResponse resp = (HttpServletResponse) continuation.getServletResponse();
+		HttpServletResponse resp = (HttpServletResponse) continuation
+				.getServletResponse();
 		resp.setContentType("text/html");
 		if (keepalive)
 			// continues push connection
@@ -57,15 +59,24 @@ public class PushHandler {
 		continuation.complete();
 	}
 
+	public void respond(String message) throws IOException {
+		pushToClient(message, true);
+	}
+
+	public void finish(int port) throws IOException {
+		pushToClient(String.format("port:%d", port), false);
+	}
+
 	public void error(String message) throws IOException {
 		Log.println(appId, "Error: " + message);
 		if (message == null || message.equals(""))
 			return;
 		Continuation continuation = waitForClient();
-		if(continuation == null)
+		if (continuation == null)
 			return;
 
-		HttpServletResponse resp = (HttpServletResponse) continuation.getServletResponse();
+		HttpServletResponse resp = (HttpServletResponse) continuation
+				.getServletResponse();
 		resp.setContentType("text/html");
 		// ends push connection
 		resp.setStatus(HttpServletResponse.SC_GONE);
@@ -95,6 +106,4 @@ public class PushHandler {
 		queue = null;
 		PushHandlerStore.close(this.appId);
 	}
-
 }
-

@@ -8,8 +8,6 @@ import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.cmu.sei.dome.cloudlets.client.Uploader.UploadInfo;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -25,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import edu.cmu.sei.dome.cloudlets.client.Uploader.UploadInfo;
 
 public class CloudletClientActivity extends Activity implements
 		OnItemClickListener {
@@ -35,7 +34,7 @@ public class CloudletClientActivity extends Activity implements
 	private CloudletApplication cloudlet;
 	private Toast toast;
 	private Uploader uploader = new Uploader(this);
-	private static ProgressDialog progress;
+	public static ProgressDialog progress;
 	private ArrayAdapter<String> adapter;
 
 	private static final FilenameFilter jsonFilter = new FilenameFilter() {
@@ -203,7 +202,7 @@ public class CloudletClientActivity extends Activity implements
 					return;
 				}
 
-				upload_JSON_APP(info, address, port);
+				deployApplication(info, address, port);
 			} else if (info.os.toLowerCase()
 					.equals(getString(R.string.windows))) {
 				InetAddress address = cloudlet.getWindowsServerAddress();
@@ -214,7 +213,7 @@ public class CloudletClientActivity extends Activity implements
 					return;
 				}
 
-				upload_JSON_APP(info, address, port);
+				deployApplication(info, address, port);
 			}
 
 		} catch (IOException e) {
@@ -224,14 +223,18 @@ public class CloudletClientActivity extends Activity implements
 		}
 	}
 
-	private void upload_JSON_APP(UploadInfo info, InetAddress address, int port) {
+	private void deployApplication(UploadInfo info, InetAddress address, int port) {
 		String url = "http:/" + address + ":" + port + "/apps/" + info.checksum;
 		Log.d(TAG, "Send to " + url);
-		uploader.postJSON(info.json, url);
-		progress.setMessage("Uploading " + info.name + "...");
-		progress.show();
+		uploader.postJSON(info, url);
+	}
+	
+	public void uploadApplication(UploadInfo info, String url) {
+		Log.d(TAG, "Application not cached. Upload it.");
 		new EventListener(this, url, info).start();
-		uploader.putFile(info.app, info.size, url,
-				progressHandler);
+		uploader.putFile(info, url, progressHandler);
+		progress.setMessage("Uploading " + info.name + "...");
+		progress.setProgress(0);
+		progress.show();
 	}
 }

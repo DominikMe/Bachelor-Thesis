@@ -8,9 +8,9 @@ import edu.cmu.sei.dome.cloudlets.packagehandler.exceptions.WrongOSException;
 
 public interface PackageHandlerImpl {
 
-	void decompress(String pkgId) throws PackageNotFoundException;
+	void decompress(String appId) throws PackageNotFoundException;
 
-	Executor execute(String pkgId) throws UnsupportedFileTypeException,
+	Executor execute(String appId) throws UnsupportedFileTypeException,
 			PackageNotFoundException, WrongOSException, FileNotFoundException;
 
 }
