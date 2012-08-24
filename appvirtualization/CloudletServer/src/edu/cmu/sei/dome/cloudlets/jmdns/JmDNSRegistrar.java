@@ -6,25 +6,23 @@ import java.net.InetAddress;
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceInfo;
 
+import edu.cmu.sei.dome.cloudlets.constants.CloudletProperties;
+
 public class JmDNSRegistrar {
 
 	public final String name;
 	public final InetAddress address;
 	public final int port;
-	public final String description;
+	public final String properties;
 
 	private Thread service;
 
-	public static void main(String[] args) throws IOException {
-		new JmDNSRegistrar("Bonjour", InetAddress.getLocalHost(), 8080, "Ja hallo erstmal.")
-				.registerService();
-	}
-
-	public JmDNSRegistrar(String name, InetAddress address, int port, String description) {
+	public JmDNSRegistrar(String name, InetAddress address, int port,
+			CloudletProperties properties) throws IOException {
 		this.name = name;
 		this.address = address;
 		this.port = port;
-		this.description = description;
+		this.properties = properties.toString();
 
 		this.service = new Thread(new JmDNSRegistrarTask());
 	}
@@ -42,9 +40,10 @@ public class JmDNSRegistrar {
 			try {
 				JmDNS mdnsServer = JmDNS.create(JmDNSRegistrar.this.address,
 						JmDNSRegistrar.this.name);
-				ServiceInfo serviceInfo = ServiceInfo.create("_http._tcp.local.",
-						JmDNSRegistrar.this.name, JmDNSRegistrar.this.port,
-						JmDNSRegistrar.this.description);
+				ServiceInfo serviceInfo = ServiceInfo.create(
+						"_http._tcp.local.", JmDNSRegistrar.this.name,
+						JmDNSRegistrar.this.port,
+						JmDNSRegistrar.this.properties);
 				mdnsServer.registerService(serviceInfo);
 			} catch (IOException e) {
 				e.printStackTrace();

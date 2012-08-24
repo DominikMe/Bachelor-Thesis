@@ -3,16 +3,16 @@ package edu.cmu.sei.dome.cloudlets.packagehandler.windows;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import edu.cmu.sei.dome.cloudlets.constants.CloudletProperties;
 import edu.cmu.sei.dome.cloudlets.constants.Commons;
-import edu.cmu.sei.dome.cloudlets.constants.OS;
 import edu.cmu.sei.dome.cloudlets.fileprocessing.FileDecompressor;
 import edu.cmu.sei.dome.cloudlets.log.Log;
 import edu.cmu.sei.dome.cloudlets.packagehandler.Executor;
 import edu.cmu.sei.dome.cloudlets.packagehandler.PackageHandlerImpl;
 import edu.cmu.sei.dome.cloudlets.packagehandler.PackageInfo;
+import edu.cmu.sei.dome.cloudlets.packagehandler.exceptions.InvalidCloudletException;
 import edu.cmu.sei.dome.cloudlets.packagehandler.exceptions.PackageNotFoundException;
 import edu.cmu.sei.dome.cloudlets.packagehandler.exceptions.UnsupportedFileTypeException;
-import edu.cmu.sei.dome.cloudlets.packagehandler.exceptions.WrongOSException;
 
 public class WindowsPackageHandler implements PackageHandlerImpl {
 
@@ -35,23 +35,26 @@ public class WindowsPackageHandler implements PackageHandlerImpl {
 
 	@Override
 	public Executor execute(String appId) throws UnsupportedFileTypeException,
-			PackageNotFoundException, WrongOSException, FileNotFoundException {
+			PackageNotFoundException, InvalidCloudletException,
+			FileNotFoundException {
 		File pkg = new File(Commons.STORE + appId);
 		if (!pkg.isDirectory())
 			throw new PackageNotFoundException();
 
 		PackageInfo info = PackageInfo.getPackageInfo(appId);
-		Log.println("Compare OS: " + info.os + " ?= windows");
-		if (!info.os.toLowerCase().equals(OS.windows.toString())) {
-			throw new WrongOSException();
+		CloudletProperties props = Commons.PROPERTIES;
+		Log.println("Check if this cloudlet (" + props
+				+ ") matches the application requirements.");
+		if (!info.matches(props)) {
+			throw new InvalidCloudletException();
 		}
 		Log.println("Filetype is " + info.type + ".");
-		
+
 		File[] fs = pkg.listFiles(Executor.DIRECTORY_FILTER);
 		if (fs.length == 0)
 			throw new PackageNotFoundException();
 		File pkgDir = fs[0];
-		
+
 		if (info.type.equals(CAMEYO)) {
 			return new CameyoExecutor(pkgDir);
 		} else if (info.type.equals(EXE)) {

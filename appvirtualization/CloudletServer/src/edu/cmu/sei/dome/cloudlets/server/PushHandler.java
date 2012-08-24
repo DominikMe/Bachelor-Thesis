@@ -79,7 +79,7 @@ public class PushHandler {
 				.getServletResponse();
 		resp.setContentType("text/html");
 		// ends push connection
-		resp.setStatus(HttpServletResponse.SC_GONE);
+		resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		resp.getWriter().write("ERROR: " + message);
 		continuation.complete();
 	}

@@ -9,7 +9,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 
 import android.util.Log;
-import edu.cmu.sei.dome.cloudlets.client.Uploader.UploadInfo;
 
 public class EventListener extends Thread {
 
@@ -43,8 +42,13 @@ public class EventListener extends Thread {
 				if ((response != null) && (response.getEntity() != null))
 					showResponse(content);
 
+				// error message
+				if (response.getStatusLine().getStatusCode() == HttpStatus.SC_BAD_REQUEST) {
+					Log.d(TAG, "ERROR occured. Stop listening for Server PUSH");
+					stopListening();
+				}
 				// no follow up - server finished 'connection'
-				if (response.getStatusLine().getStatusCode() == HttpStatus.SC_GONE) {
+				else if (response.getStatusLine().getStatusCode() == HttpStatus.SC_GONE) {
 					Log.d(TAG, "Stop listening for Server PUSH");
 					stopListening();
 
@@ -57,7 +61,7 @@ public class EventListener extends Thread {
 							content).get(HttpUtil.PORT_KEY));
 					this.cloudletClient.showToast("Started on port " + port);
 
-					this.cloudletClient.startApp(this.info.client_pkg, addr,
+					this.cloudletClient.startApp(this.info.clientPackage, addr,
 							port);
 					return;
 				}

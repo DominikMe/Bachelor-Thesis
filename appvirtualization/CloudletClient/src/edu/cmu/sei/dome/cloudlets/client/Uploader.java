@@ -32,6 +32,8 @@ public class Uploader {
 
 	static final int PROGRESS_UPDATE = 1;
 	static final double PROGRESS_FIDELITY = 0.05;
+	private static final int CACHED = HttpStatus.SC_GONE;
+	private static final int NOT_CACHED = HttpStatus.SC_OK;
 
 	public Uploader(CloudletClientActivity cloudletClient) {
 		this.client = HttpUtil.getThreadSafeClient();
@@ -74,8 +76,8 @@ public class Uploader {
 				if (result != null) {
 					String content = HttpUtil.getContent(result);
 					cloudletClient.showToast(content);
-					int status = result.getStatusLine().getStatusCode(); 
-					if (status == HttpStatus.SC_GONE) {
+					int status = result.getStatusLine().getStatusCode();
+					if (status == CACHED) {
 						String address = HttpUtil.getIPAddressFromURL(url);
 						int port = Integer.parseInt(HttpUtil
 								.parseFinalResponse(content).get(
@@ -83,9 +85,11 @@ public class Uploader {
 						cloudletClient
 								.showToast("Application already deployed.\nStarted on port "
 										+ port);
-						cloudletClient.startApp(info.client_pkg, address, port);
-					} else if (status == HttpStatus.SC_OK){
-						cloudletClient.uploadApplication(info, url);
+						cloudletClient.startApp(info.clientPackage, address, port);
+					} else {
+						if (status == NOT_CACHED) {
+							cloudletClient.uploadApplication(info, url);
+						}
 					}
 				}
 			};
@@ -196,21 +200,6 @@ public class Uploader {
 			bundle.putDouble("transferred", p);
 			msg.setData(bundle);
 			handler.sendMessage(msg);
-		}
-	}
-
-	class UploadInfo {
-		String name;
-		String checksum;
-		String os;
-		String type;
-		String client_pkg;
-		long size;
-		File json;
-		File app;
-		int port;
-
-		public UploadInfo() {
 		}
 	}
 }

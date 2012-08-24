@@ -15,10 +15,7 @@ public final class Commons {
 	public static int PORT = 8080;
 	public static final String CODENAME = "SINAI";
 
-	public static final String getAttributes() {
-		return String.format("name=%s,os=%s,version=%f", CODENAME,
-				MY_OS.toString(), VERSION);
-	}
+	public static CloudletProperties PROPERTIES;
 
 	// JSON keys
 	public static final String JSON_CHECKSUM = "checksum";
@@ -33,8 +30,10 @@ public final class Commons {
 	public static final String ChecksumException = "The uploaded file does not match the submitted checksum.";
 	public static final String FilesizeException = "The uploaded file has not the specified size.";
 	public static final String PackageNotFoundException = "This application package could not be found.";
-	public static String WrongOSException() {
-		return "The operating system must be " + MY_OS + ".";
+
+	public static String InvalidCloudletException() {
+		return "This cloudlet (" + PROPERTIES
+				+ ") does not match the application requirements.";
 	}
 
 }

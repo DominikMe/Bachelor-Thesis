@@ -48,21 +48,22 @@ public class HttpUtil {
 			reader.close();
 			content = sb.toString();
 			// remove last line feed
-			content = content.substring(0, content.lastIndexOf("\n"));
-		} catch(IOException e) {
+			content = content.substring(0,
+					Math.max(0, content.lastIndexOf("\n")));
+		} catch (IOException e) {
 			Log.d(TAG, "Error in getContent(HttpResponse)!");
 			e.printStackTrace();
 		}
 		return content;
 	}
-	
+
 	public static String getIPAddressFromURL(String url) {
 		String addr = url.replaceFirst("http://", "");
 		addr = addr.replaceAll("/.*", "");
 		addr = addr.replaceAll(":.*", "");
 		return addr;
 	}
-	
+
 	public static Map<String, String> parseFinalResponse(String content) {
 		HashMap<String, String> map = new HashMap<String, String>();
 		String[] entries = content.split(",");
