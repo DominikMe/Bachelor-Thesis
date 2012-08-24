@@ -1,6 +1,6 @@
 package edu.cmu.sei.dome.cloudlets.packagehandler.exceptions;
 
-public class WrongOSException extends Exception {
+public class InvalidCloudletException extends Exception {
 
 	/**
 	 * 

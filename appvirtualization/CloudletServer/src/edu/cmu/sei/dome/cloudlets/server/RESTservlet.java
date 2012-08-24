@@ -27,7 +27,7 @@ import edu.cmu.sei.dome.cloudlets.packagehandler.PackageHandler;
 import edu.cmu.sei.dome.cloudlets.packagehandler.PackageInfo;
 import edu.cmu.sei.dome.cloudlets.packagehandler.exceptions.PackageNotFoundException;
 import edu.cmu.sei.dome.cloudlets.packagehandler.exceptions.UnsupportedFileTypeException;
-import edu.cmu.sei.dome.cloudlets.packagehandler.exceptions.WrongOSException;
+import edu.cmu.sei.dome.cloudlets.packagehandler.exceptions.InvalidCloudletException;
 
 public class RESTservlet extends HttpServlet {
 
@@ -76,11 +76,6 @@ public class RESTservlet extends HttpServlet {
 		TimeLog timeLog = TimeLogStore.getTimeLog(appId);
 		timeLog.stamp("Application upload started.");
 
-		resp.setContentType("text/html");
-		resp.setStatus(HttpServletResponse.SC_OK);
-		resp.getWriter().write(
-				String.format("You uploaded %s, %s bytes\n", upload.getName(),
-						upload.getSize()));
 
 		// client must now already have requested server push by sending a GET
 		// request
@@ -134,17 +129,17 @@ public class RESTservlet extends HttpServlet {
 
 		// try to execute file
 		try {
-			// start application without arguments
-			pkgHandler.execute(appId).start();
+			// start application with arguments from packageinfo
 			info = PackageInfo.getPackageInfo(appId);
+			pkgHandler.execute(appId).start(info.serverArgs.split(" "));
 		} catch (UnsupportedFileTypeException e) {
 			push.error(Commons.UnsupportedFileTypeException);
 			e.printStackTrace();
 		} catch (PackageNotFoundException e) {
 			push.error(Commons.PackageNotFoundException);
 			e.printStackTrace();
-		} catch (WrongOSException e) {
-			push.error(Commons.WrongOSException());
+		} catch (InvalidCloudletException e) {
+			push.error(Commons.InvalidCloudletException());
 			e.printStackTrace();
 		}
 		timeLog.stamp("Application executed.");
@@ -176,21 +171,21 @@ public class RESTservlet extends HttpServlet {
 		String appId = req.getPathInfo().substring(1);
 
 		resp.setContentType("text/html");
-		
+
 		// APPLICATION IS CACHED
 		if (new File(Commons.STORE + appId).isDirectory()) {
 			PackageHandler pkgHandler = PackageHandler
 					.getInstance(Commons.MY_OS);
 			try {
 				PackageInfo info = PackageInfo.getPackageInfo(appId);
-				pkgHandler.execute(appId).start();
+				pkgHandler.execute(appId).start(info.serverArgs.split(" "));
 				// tell client to use existing package
 				Log.println(appId, "Execute cached application.");
 				resp.setStatus(HttpServletResponse.SC_GONE);
 				resp.getWriter().write(String.format("port:%d", info.port));
-				
+
 				return;
-				
+
 			} catch (Exception e) {
 				e.printStackTrace();
 				// let client upload and overwrite existing malfunctioning
@@ -198,7 +193,7 @@ public class RESTservlet extends HttpServlet {
 				Log.println(appId, "Cached application is broken.");
 			}
 		}
-		
+
 		// NEW APPLICATION - NOT CACHED
 		Log.println(appId, "Application not cached, wait for upload.");
 

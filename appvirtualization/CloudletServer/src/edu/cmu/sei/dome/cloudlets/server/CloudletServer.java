@@ -11,6 +11,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
+import edu.cmu.sei.dome.cloudlets.constants.CloudletProperties;
 import edu.cmu.sei.dome.cloudlets.constants.Commons;
 import edu.cmu.sei.dome.cloudlets.constants.OS;
 import edu.cmu.sei.dome.cloudlets.jmdns.JmDNSRegistrar;
@@ -31,6 +32,9 @@ public class CloudletServer {
 		}
 
 		Log.println("Detected a " + Commons.MY_OS + " system.");
+		
+		CloudletProperties props = CloudletProperties.getCloudletProperties("properties.json");
+		Commons.PROPERTIES = props;
 
 		// make directories if they do not exist
 		File store = new File(Commons.STORE);
@@ -64,7 +68,7 @@ public class CloudletServer {
 			address = InetAddress.getLocalHost();
 		Log.println(address.getHostAddress());
 		JmDNSRegistrar jmdns = new JmDNSRegistrar(Commons.NAME, address,
-				Commons.PORT, Commons.getAttributes());
+				Commons.PORT, Commons.PROPERTIES);
 		jmdns.registerService();
 
 		server.start();

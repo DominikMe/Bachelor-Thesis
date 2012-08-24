@@ -7,7 +7,7 @@ import java.util.Arrays;
 import edu.cmu.sei.dome.cloudlets.log.Log;
 import edu.cmu.sei.dome.cloudlets.packagehandler.Executor;
 
-public class WindowsTerminalExecutor extends Executor {
+public abstract class WindowsTerminalExecutor extends Executor {
 
 	private static final String TERMINAL = "cmd";
 	private static final String TERMINAL_FLAG = "/c";
@@ -15,7 +15,7 @@ public class WindowsTerminalExecutor extends Executor {
 	protected File executable;
 	protected File cwd;
 
-	public WindowsTerminalExecutor(File cwd) {
+	protected WindowsTerminalExecutor(File cwd) {
 		this.cwd = cwd;
 	}
 

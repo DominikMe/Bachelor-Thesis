@@ -1,6 +1,7 @@
 package edu.cmu.sei.dome.cloudlets.client;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceEvent;
@@ -14,8 +15,6 @@ import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.MulticastLock;
 import android.os.IBinder;
 import android.util.Log;
-import edu.cmu.sei.dome.cloudlets.client.CloudletApplication;
-import edu.cmu.sei.dome.cloudlets.client.R;
 
 public class JmDNSDiscoverer extends Service {
 
@@ -84,22 +83,12 @@ public class JmDNSDiscoverer extends Service {
 			Log.d(TAG, "attributes: " + info.getNiceTextString());
 
 			String[] attr = info.getNiceTextString().split(",");
+			HashMap<String, String> properties = new HashMap<String, String>();
 			for (String a : attr) {
 				a = a.trim();
-				String[] key_value = a.split("=");
-				if (key_value[0].equals("os")) {
-					Log.d(TAG, "service runs on " + key_value[1]);
-					try {
-						if (key_value[1].equals(getString(R.string.linux))) {
-							app.linuxServers.put(info);
-						} else if (key_value[1]
-								.equals(getString(R.string.windows))) {
-							app.windowsServers.put(info);
-						}
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
+				String[] key_value = a.split(":");
+				properties.put(key_value[0].trim(), key_value[1].trim());
+				app.addServer(properties, info);
 			}
 
 		}

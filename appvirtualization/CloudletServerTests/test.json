@@ -1,5 +1,6 @@
 {
 	"name": "FaceRecognition",
+	"description": "This application does Face Recognition.",
 	"checksum": "e918a05b332ce38f6ca2bd217bed7d3b",
 	"size": 12492671,
 	"type": "exe",
@@ -9,12 +10,11 @@
 		{
 			"os": "windows",
 			"architecture": "x86",
-			"cores_min": 1
+			"cores_min": 2
 		},
 		{
 			"os": "windows",
-			"architecture": "x86-64",
-			"cores_min": 1
+			"architecture": "x86-64"
 		}
-	]
+	]	
 }

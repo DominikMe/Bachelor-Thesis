@@ -12,7 +12,11 @@ import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class FileDecompressor {
+public final class FileDecompressor {
+	
+	private FileDecompressor() {
+		
+	}
 	
 	public static final FilenameFilter ZIP_FILTER = new FilenameFilter() {
 		public boolean accept(File dir, String filename) {

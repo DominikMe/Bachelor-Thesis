@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 import edu.cmu.sei.dome.cloudlets.constants.OS;
 import edu.cmu.sei.dome.cloudlets.packagehandler.exceptions.PackageNotFoundException;
 import edu.cmu.sei.dome.cloudlets.packagehandler.exceptions.UnsupportedFileTypeException;
-import edu.cmu.sei.dome.cloudlets.packagehandler.exceptions.WrongOSException;
+import edu.cmu.sei.dome.cloudlets.packagehandler.exceptions.InvalidCloudletException;
 import edu.cmu.sei.dome.cloudlets.packagehandler.linux.LinuxPackageHandler;
 import edu.cmu.sei.dome.cloudlets.packagehandler.windows.WindowsPackageHandler;
 
@@ -48,7 +48,7 @@ public final class PackageHandler {
 	}
 
 	public Executor execute(String appId) throws UnsupportedFileTypeException,
-			PackageNotFoundException, WrongOSException, FileNotFoundException {
+			PackageNotFoundException, InvalidCloudletException, FileNotFoundException {
 		return impl.execute(appId);
 	}
 

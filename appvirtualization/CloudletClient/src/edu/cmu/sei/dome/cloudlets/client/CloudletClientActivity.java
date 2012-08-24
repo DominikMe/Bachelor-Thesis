@@ -1,19 +1,16 @@
 package edu.cmu.sei.dome.cloudlets.client;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.JsonReader;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -23,7 +20,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import edu.cmu.sei.dome.cloudlets.client.Uploader.UploadInfo;
 
 public class CloudletClientActivity extends Activity implements
 		OnItemClickListener {
@@ -103,7 +99,9 @@ public class CloudletClientActivity extends Activity implements
 		File store = new File(STORE);
 		Log.d(TAG, store.getAbsolutePath());
 		adapter.clear();
-		for (File app : store.listFiles()) {
+		File[] files = store.listFiles();
+		Arrays.sort(files);
+		for (File app : files) {
 			if (app.isDirectory())
 				adapter.add(app.getName());
 		}
@@ -126,6 +124,8 @@ public class CloudletClientActivity extends Activity implements
 	}
 
 	public void showToast(final String msg) {
+		if (msg == null || msg.equals(""))
+			return;
 		runOnUiThread(new Runnable() {
 
 			public void run() {
@@ -164,57 +164,27 @@ public class CloudletClientActivity extends Activity implements
 		Log.d(TAG, "Found " + json.getName());
 
 		try {
-			JsonReader jsonreader = new JsonReader(new FileReader(json));
-			Map<String, String> entries = new HashMap<String, String>();
-			jsonreader.beginObject();
-			while (jsonreader.hasNext()) {
-				entries.put(jsonreader.nextName(), jsonreader.nextString());
-			}
-			jsonreader.endObject();
+			UploadInfo info = new UploadInfo(json);
 
-			UploadInfo info = uploader.new UploadInfo();
-			info.name = entries.get("name");
-			info.checksum = entries.get("checksum");
-			info.os = entries.get("os");
-			info.type = entries.get("type");
-			info.client_pkg = entries.get("package");
-			info.port = Integer.parseInt(entries.get("port"));
-			info.size = Long.parseLong(entries.get("size"));
-			info.json = json;
-
-			String msg = String.format(
-					"Name: %s\nSize: %d\nChecksum: %s\nOS: %s\nType: %s\n",
-					info.name, info.size, info.checksum, info.os, info.type);
-			this.showToast(msg);
+			this.showToast(info.toString());
 
 			// get upload file
 			File app = appdir.listFiles(archiveFilter)[0];
 			Log.d(TAG, "Found " + app.getName());
 			info.app = app;
 
-			Log.d(TAG, "Required OS is " + info.os + ".");
-			if (info.os.toLowerCase().equals(getString(R.string.linux))) {
-				InetAddress address = cloudlet.getLinuxServerAddress();
-				int port = cloudlet.getLinuxServerPort();
+			Log.d(TAG, "Cloudlet requirements are " + info.cloudlets.toString()
+					+ ".");
+			InetAddress address = cloudlet.getServerAddress(info);
+			int port = cloudlet.getServerPort(info);
 
-				if (address == null || port == -1) {
-					error("Could not find a Linux Cloudlet!");
-					return;
-				}
-
-				deployApplication(info, address, port);
-			} else if (info.os.toLowerCase()
-					.equals(getString(R.string.windows))) {
-				InetAddress address = cloudlet.getWindowsServerAddress();
-				int port = cloudlet.getWindowsServerPort();
-
-				if (address == null || port == -1) {
-					error("Could not find a Windows Cloudlet!");
-					return;
-				}
-
-				deployApplication(info, address, port);
+			if (address == null || port == -1) {
+				error(String.format("Could not find a suitable Cloudlet! (%s)",
+						info.cloudlets));
+				return;
 			}
+
+			deployApplication(info, address, port);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -223,12 +193,13 @@ public class CloudletClientActivity extends Activity implements
 		}
 	}
 
-	private void deployApplication(UploadInfo info, InetAddress address, int port) {
+	private void deployApplication(UploadInfo info, InetAddress address,
+			int port) {
 		String url = "http:/" + address + ":" + port + "/apps/" + info.checksum;
 		Log.d(TAG, "Send to " + url);
 		uploader.postJSON(info, url);
 	}
-	
+
 	public void uploadApplication(UploadInfo info, String url) {
 		Log.d(TAG, "Application not cached. Upload it.");
 		new EventListener(this, url, info).start();

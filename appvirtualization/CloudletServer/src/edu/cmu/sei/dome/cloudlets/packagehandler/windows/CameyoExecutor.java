@@ -10,7 +10,7 @@ import edu.cmu.sei.dome.cloudlets.log.Log;
 
 public class CameyoExecutor extends WindowsTerminalExecutor {
 
-	private static final FilenameFilter EXE_FILTER = new FilenameFilter() {
+	private static final FilenameFilter CAMEYO_FILTER = new FilenameFilter() {
 		public boolean accept(File dir, String filename) {
 			return (filename.endsWith(".exe"));
 		}
@@ -18,7 +18,7 @@ public class CameyoExecutor extends WindowsTerminalExecutor {
 
 	public CameyoExecutor(File pkg) throws FileNotFoundException {
 		super(pkg);
-		File[] fs = pkg.listFiles(EXE_FILTER);
+		File[] fs = pkg.listFiles(CAMEYO_FILTER);
 		if (fs.length == 0)
 			throw new FileNotFoundException();
 		this.executable = fs[0];

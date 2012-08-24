@@ -7,14 +7,14 @@ import java.util.Arrays;
 import edu.cmu.sei.dome.cloudlets.log.Log;
 import edu.cmu.sei.dome.cloudlets.packagehandler.Executor;
 
-public class LinuxTerminalExecutor extends Executor {
+public abstract class LinuxTerminalExecutor extends Executor {
 
 	private static final String TERMINAL = "gnome-terminal";
 	private static final String TERMINAL_EXECFLAG = "-x";
 	protected File executable;
 	protected File cwd;
 
-	public LinuxTerminalExecutor(File cwd) {
+	protected LinuxTerminalExecutor(File cwd) {
 		this.cwd = cwd;
 	}
 
