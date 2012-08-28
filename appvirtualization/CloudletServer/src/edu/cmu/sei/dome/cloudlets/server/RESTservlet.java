@@ -76,7 +76,6 @@ public class RESTservlet extends HttpServlet {
 		TimeLog timeLog = TimeLogStore.getTimeLog(appId);
 		timeLog.stamp("Application upload started.");
 
-
 		// client must now already have requested server push by sending a GET
 		// request
 		PushHandler push = PushHandlerStore.getPushHandler(appId);

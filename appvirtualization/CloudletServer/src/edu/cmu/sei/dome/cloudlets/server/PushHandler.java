@@ -24,6 +24,10 @@ public class PushHandler {
 	// maximum time for holding a client request
 	private static final long CONTINUATION_TIMEOUT = 1000 * 60 * 12;
 
+	private static final int CONTINUE = HttpServletResponse.SC_OK;
+	private static final int ERROR = HttpServletResponse.SC_BAD_REQUEST;
+	private static final int FINISH = HttpServletResponse.SC_GONE;
+
 	private String appId;
 	private Queue<Continuation> queue;
 
@@ -42,7 +46,7 @@ public class PushHandler {
 		Log.println(appId, "Respond: " + message);
 		if (message == null || message.equals(""))
 			return;
-		Continuation continuation = waitForClient();
+		Continuation continuation = waitForClientRequest();
 		if (continuation == null)
 			return;
 
@@ -50,11 +54,11 @@ public class PushHandler {
 				.getServletResponse();
 		resp.setContentType("text/html");
 		if (keepalive)
-			// continues push connection
-			resp.setStatus(HttpServletResponse.SC_OK);
+			// continues long polling
+			resp.setStatus(CONTINUE);
 		else
-			// ends push connection
-			resp.setStatus(HttpServletResponse.SC_GONE);
+			// ends long polling
+			resp.setStatus(FINISH);
 		resp.getWriter().write(message);
 		continuation.complete();
 	}
@@ -71,7 +75,7 @@ public class PushHandler {
 		Log.println(appId, "Error: " + message);
 		if (message == null || message.equals(""))
 			return;
-		Continuation continuation = waitForClient();
+		Continuation continuation = waitForClientRequest();
 		if (continuation == null)
 			return;
 
@@ -79,12 +83,12 @@ public class PushHandler {
 				.getServletResponse();
 		resp.setContentType("text/html");
 		// ends push connection
-		resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		resp.setStatus(ERROR);
 		resp.getWriter().write("ERROR: " + message);
 		continuation.complete();
 	}
 
-	private Continuation waitForClient() {
+	private Continuation waitForClientRequest() {
 		long time = System.currentTimeMillis();
 		while (queue.isEmpty()) {
 			try {

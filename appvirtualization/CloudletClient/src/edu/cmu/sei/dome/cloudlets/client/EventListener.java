@@ -22,6 +22,9 @@ public class EventListener extends Thread {
 	static final int PROGRESS_UPDATE = 1;
 	static final double PROGRESS_FIDELITY = 0.05;
 
+	private static final int ERROR = HttpStatus.SC_BAD_REQUEST;
+	private static final int FINISH = HttpStatus.SC_GONE;
+
 	public EventListener(final CloudletClientActivity cloudletClient,
 			final String url, final UploadInfo info) {
 		this.client = HttpUtil.getThreadSafeClient();
@@ -34,21 +37,21 @@ public class EventListener extends Thread {
 	public void run() {
 		while (running) {
 			Log.d(TAG, "Listen for Server PUSH");
-			HttpGet get = new HttpGet(url);
-			HttpResponse response = null;
+
 			try {
-				response = client.execute(get);
+				HttpGet get = new HttpGet(url);
+				HttpResponse response = client.execute(get);
 				String content = HttpUtil.getContent(response);
 				if ((response != null) && (response.getEntity() != null))
 					showResponse(content);
 
 				// error message
-				if (response.getStatusLine().getStatusCode() == HttpStatus.SC_BAD_REQUEST) {
+				if (response.getStatusLine().getStatusCode() == ERROR) {
 					Log.d(TAG, "ERROR occured. Stop listening for Server PUSH");
 					stopListening();
 				}
 				// no follow up - server finished 'connection'
-				else if (response.getStatusLine().getStatusCode() == HttpStatus.SC_GONE) {
+				else if (response.getStatusLine().getStatusCode() == FINISH) {
 					Log.d(TAG, "Stop listening for Server PUSH");
 					stopListening();
 
