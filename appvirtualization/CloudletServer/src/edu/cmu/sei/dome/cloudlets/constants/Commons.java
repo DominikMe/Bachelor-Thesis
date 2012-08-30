@@ -9,7 +9,8 @@ public final class Commons {
 	public static final String STORE = "uploads/";
 	public static final String LOG = "log/";
 	public static OS MY_OS = OS.linux;
-	public static boolean DEBUG = true;
+	public static boolean DEBUG = false;
+	public static boolean CACHING_ENABLED = false;
 	public static final String NAME = "CloudletServer";
 	public static final double VERSION = 1.0;
 	public static int PORT = 8080;

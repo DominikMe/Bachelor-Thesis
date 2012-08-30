@@ -19,7 +19,11 @@ import edu.cmu.sei.dome.cloudlets.log.Log;
 
 public class CloudletServer {
 
+	private static String intf = null;
+
 	public static void main(String[] args) throws Exception {
+		parseArguments(args);
+
 		String osname = System.getProperty("os.name");
 		Log.println("Running on " + osname);
 
@@ -32,8 +36,9 @@ public class CloudletServer {
 		}
 
 		Log.println("Detected a " + Commons.MY_OS + " system.");
-		
-		CloudletProperties props = CloudletProperties.getCloudletProperties("properties.json");
+
+		CloudletProperties props = CloudletProperties
+				.getCloudletProperties("properties.json");
 		Commons.PROPERTIES = props;
 
 		// make directories if they do not exist
@@ -56,12 +61,11 @@ public class CloudletServer {
 		// register cloudlet server
 		// JmDNSHelper.registerService(Commons.NAME, Commons.getAttributes());
 		InetAddress address = null;
-		if (args.length > 0) {
-			String intfName = args[0];
-			final NetworkInterface intf = NetworkInterface.getByName(intfName);
+		if (intf != null) {
+			final NetworkInterface nintf = NetworkInterface.getByName(intf);
 
-			if (intf != null && intf.isUp() && intf.supportsMulticast()) {
-				address = getInet4Address(intf);
+			if (nintf != null && nintf.isUp() && nintf.supportsMulticast()) {
+				address = getInet4Address(nintf);
 			}
 		}
 		if (address == null)
@@ -75,6 +79,22 @@ public class CloudletServer {
 		server.join();
 	}
 
+	private static void parseArguments(String[] args) {
+		for (int i = 0; i < args.length; i++) {
+			String arg = args[i];
+			if (arg.equals("-debug") || arg.equals("-d")) {
+				Commons.DEBUG = true;
+			} else if (arg.equals("-caching") || arg.equals("-c")) {
+				Commons.CACHING_ENABLED = true;
+			} else if ((arg.equals("-interface") || arg.equals("-i"))
+					&& i < args.length - 1) {
+				CloudletServer.intf = args[++i];
+			} else
+				Log.println("Unknown argument: " + arg);
+		}
+
+	}
+
 	private static InetAddress getInet4Address(final NetworkInterface intf)
 			throws UnknownHostException {
 		Enumeration<InetAddress> addrs = intf.getInetAddresses();
@@ -85,5 +105,5 @@ public class CloudletServer {
 		}
 		return null;
 	}
-	
+
 }

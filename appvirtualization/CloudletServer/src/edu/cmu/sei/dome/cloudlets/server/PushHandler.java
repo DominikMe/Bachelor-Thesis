@@ -41,51 +41,33 @@ public class PushHandler {
 		queue.add(continuation);
 	}
 
-	private void pushToClient(String message, boolean keepalive)
-			throws IOException {
-		Log.println(appId, "Respond: " + message);
+	private void pushToClient(String message, int status) throws IOException {
 		if (message == null || message.equals(""))
 			return;
 		Continuation continuation = waitForClientRequest();
 		if (continuation == null)
 			return;
 
+		Log.println(appId, "Respond: " + message);
 		HttpServletResponse resp = (HttpServletResponse) continuation
 				.getServletResponse();
 		resp.setContentType("text/html");
-		if (keepalive)
-			// continues long polling
-			resp.setStatus(CONTINUE);
-		else
-			// ends long polling
-			resp.setStatus(FINISH);
+		resp.setStatus(status);
 		resp.getWriter().write(message);
 		continuation.complete();
 	}
 
 	public void respond(String message) throws IOException {
-		pushToClient(message, true);
+		pushToClient(message, CONTINUE);
 	}
 
 	public void finish(int port) throws IOException {
-		pushToClient(String.format("port:%d", port), false);
+		pushToClient(String.format("port:%d", port), FINISH);
 	}
 
 	public void error(String message) throws IOException {
 		Log.println(appId, "Error: " + message);
-		if (message == null || message.equals(""))
-			return;
-		Continuation continuation = waitForClientRequest();
-		if (continuation == null)
-			return;
-
-		HttpServletResponse resp = (HttpServletResponse) continuation
-				.getServletResponse();
-		resp.setContentType("text/html");
-		// ends push connection
-		resp.setStatus(ERROR);
-		resp.getWriter().write("ERROR: " + message);
-		continuation.complete();
+		pushToClient(String.format("ERROR: %s", message), ERROR);
 	}
 
 	private Continuation waitForClientRequest() {

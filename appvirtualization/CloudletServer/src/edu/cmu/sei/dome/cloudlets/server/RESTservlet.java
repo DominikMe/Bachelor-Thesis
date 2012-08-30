@@ -70,7 +70,6 @@ public class RESTservlet extends HttpServlet {
 
 		Part upload = req.getPart("file");
 		String name = readString(req.getPart("name"));
-		long size = Long.parseLong(readString(req.getPart("size")));
 
 		Log.println(appId, "FileServlet.doPost has been triggered.");
 		TimeLog timeLog = TimeLogStore.getTimeLog(appId);
@@ -88,10 +87,19 @@ public class RESTservlet extends HttpServlet {
 		File f = FileUtils.saveUpload(upload, name, appId);
 		timeLog.stamp("Application upload finished.");
 
+		PackageInfo info = null;
+
+		try {
+			info = PackageInfo.getPackageInfo(appId);
+		} catch (PackageNotFoundException e) {
+			push.error(Commons.PackageNotFoundException);
+			e.printStackTrace();
+		}
+
 		// check md5hash
 		try {
 			String checkhash = FileUtils.md5hash(f);
-			if (!appId.equals(checkhash)) {
+			if (!checkhash.equals(info.checksum)) {
 				push.error(Commons.ChecksumException);
 				// backtrack: delete application folder
 				FileUtils.deleteRecursively(new File(Commons.STORE + appId));
@@ -105,7 +113,7 @@ public class RESTservlet extends HttpServlet {
 		timeLog.stamp("File checksum verified.");
 
 		// check file size
-		if (size != f.length()) {
+		if (info.size != f.length()) {
 			push.error(Commons.FilesizeException);
 			// backtrack: delete application folder
 			FileUtils.deleteRecursively(new File(Commons.STORE + appId));
@@ -114,7 +122,6 @@ public class RESTservlet extends HttpServlet {
 		timeLog.stamp("File size verified.");
 
 		PackageHandler pkgHandler = PackageHandler.getInstance(Commons.MY_OS);
-		PackageInfo info = null;
 
 		// decompress
 		push.respond("Decompress\n");
@@ -129,8 +136,11 @@ public class RESTservlet extends HttpServlet {
 		// try to execute file
 		try {
 			// start application with arguments from packageinfo
-			info = PackageInfo.getPackageInfo(appId);
-			pkgHandler.execute(appId).start(info.serverArgs.split(" "));
+			timeLog.stamp("1 Execute application.");
+			pkgHandler.execute(appId).start(info.serverArgs.split(" "))
+					.waitFor();
+			timeLog.stamp("2 Execute application.");
+			timeLog.stamp("3 Execute application.");
 		} catch (UnsupportedFileTypeException e) {
 			push.error(Commons.UnsupportedFileTypeException);
 			e.printStackTrace();
@@ -140,11 +150,15 @@ public class RESTservlet extends HttpServlet {
 		} catch (InvalidCloudletException e) {
 			push.error(Commons.InvalidCloudletException());
 			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		timeLog.stamp("Application executed.");
 		String time = new SimpleDateFormat("yyyy-MM-dd HH-mm ")
 				.format(new Date());
-		timeLog.writeToFile(Commons.LOG + time + name + ".txt");
+		new File(Commons.LOG + appId).mkdirs();
+		timeLog.writeToFile(Commons.LOG + appId + "/" + time + name + ".txt");
 		timeLog.close();
 
 		push.respond("Execute\n");
@@ -171,18 +185,30 @@ public class RESTservlet extends HttpServlet {
 
 		resp.setContentType("text/html");
 
+		TimeLog timeLog = TimeLogStore.getTimeLog(appId);
+		timeLog.stamp("JSON upload started.");
+
 		// APPLICATION IS CACHED
-		if (new File(Commons.STORE + appId).isDirectory()) {
+		if (Commons.CACHING_ENABLED
+				&& new File(Commons.STORE + appId).isDirectory()) {
 			PackageHandler pkgHandler = PackageHandler
 					.getInstance(Commons.MY_OS);
 			try {
 				PackageInfo info = PackageInfo.getPackageInfo(appId);
-				pkgHandler.execute(appId).start(info.serverArgs.split(" "));
+				timeLog.stamp("1 Execute cached application.");
+				pkgHandler.execute(appId).start(info.serverArgs.split(" "))
+						.waitFor();
 				// tell client to use existing package
-				Log.println(appId, "Execute cached application.");
+				timeLog.stamp("2 Execute cached application.");
+				timeLog.stamp("3 Execute cached application.");
 				resp.setStatus(HttpServletResponse.SC_GONE);
 				resp.getWriter().write(String.format("port:%d", info.port));
 
+				String time = new SimpleDateFormat("yyyy-MM-dd HH-mm ")
+						.format(new Date());
+				new File(Commons.LOG + appId).mkdirs();
+				timeLog.writeToFile(Commons.LOG + appId + "/" + time + ".txt");
+				timeLog.close();
 				return;
 
 			} catch (Exception e) {
@@ -195,9 +221,6 @@ public class RESTservlet extends HttpServlet {
 
 		// NEW APPLICATION - NOT CACHED
 		Log.println(appId, "Application not cached, wait for upload.");
-
-		TimeLog timeLog = TimeLogStore.getTimeLog(appId);
-		timeLog.stamp("JSON upload started.");
 
 		// parse json file
 		Part jsonUpload = req.getPart("json");

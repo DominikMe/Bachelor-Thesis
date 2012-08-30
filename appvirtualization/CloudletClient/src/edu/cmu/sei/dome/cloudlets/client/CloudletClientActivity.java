@@ -4,12 +4,15 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
@@ -20,12 +23,16 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import edu.cmu.sei.dome.cloudlets.client.log.TimeLog;
 
 public class CloudletClientActivity extends Activity implements
 		OnItemClickListener {
 
 	private static final String TAG = "CloudletClientActivity";
-	static final String STORE = "sdcard/myCloudlets/apps/servers/";
+	static final String STORE = Environment.getExternalStorageDirectory()
+			.getAbsolutePath() + "/myCloudlets/apps/servers/";
+	static final String LOG = Environment.getExternalStorageDirectory()
+			.getAbsolutePath() + "/myCloudlets/log/";
 
 	private CloudletApplication cloudlet;
 	private Toast toast;
@@ -71,6 +78,8 @@ public class CloudletClientActivity extends Activity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		cloudlet = (CloudletApplication) getApplication();
+		
+		new File(LOG).mkdirs();
 
 		Log.e(TAG,
 				"Service started? "
@@ -144,10 +153,23 @@ public class CloudletClientActivity extends Activity implements
 		}
 		Log.d(TAG, "Start application " + pkg + ", address:" + address + ":"
 				+ port);
+		TimeLog.stamp("Start application client.");
 		Intent app = getPackageManager().getLaunchIntentForPackage(pkg);
 		app.putExtra("address", address);
 		app.putExtra("port", port);
 		startActivity(app);
+		TimeLog.stamp("Application client has started.");
+
+		Log.d(TAG, "External Storage: " + Environment.getExternalStorageState());
+		String time = new SimpleDateFormat("yyyy-MM-dd HH-mm")
+				.format(new Date());
+		new File(LOG + pkg).mkdirs();
+		try {
+			TimeLog.writeToFile(LOG + pkg + "/" + time + ".txt");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		TimeLog.reset();
 	}
 
 	public void onItemClick(AdapterView<?> parent, View view, int position,
@@ -155,11 +177,13 @@ public class CloudletClientActivity extends Activity implements
 		TextView item = (TextView) ((LinearLayout) view).getChildAt(0);
 		String appname = (String) item.getText();
 		Log.d(TAG, "You clicked " + item.getText());
+		TimeLog.stamp("Clicked " + appname);
 		File appdir = new File(STORE + appname);
 		if (!appdir.isDirectory())
 			return;
 
 		// analyze json
+		TimeLog.stamp("Find suitable cloudlet.");
 		File json = appdir.listFiles(jsonFilter)[0];
 		Log.d(TAG, "Found " + json.getName());
 
@@ -181,6 +205,7 @@ public class CloudletClientActivity extends Activity implements
 			if (address == null || port == -1) {
 				error(String.format("Could not find a suitable Cloudlet! (%s)",
 						info.cloudlets));
+				TimeLog.reset();
 				return;
 			}
 
@@ -197,12 +222,14 @@ public class CloudletClientActivity extends Activity implements
 			int port) {
 		String url = "http:/" + address + ":" + port + "/apps/" + info.checksum;
 		Log.d(TAG, "Send to " + url);
+		TimeLog.stamp("POST application metadata json.");
 		uploader.postJSON(info, url);
 	}
 
 	public void uploadApplication(UploadInfo info, String url) {
 		Log.d(TAG, "Application not cached. Upload it.");
 		new EventListener(this, url, info).start();
+		TimeLog.stamp("PUT application package archive.");
 		uploader.putFile(info, url, progressHandler);
 		progress.setMessage("Uploading " + info.name + "...");
 		progress.setProgress(0);

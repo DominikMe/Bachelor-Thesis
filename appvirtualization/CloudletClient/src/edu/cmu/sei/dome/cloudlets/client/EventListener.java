@@ -47,8 +47,7 @@ public class EventListener extends Thread {
 
 				// error message
 				if (response.getStatusLine().getStatusCode() == ERROR) {
-					Log.d(TAG, "ERROR occured. Stop listening for Server PUSH");
-					stopListening();
+					Log.d(TAG, "An ERROR occured.");
 				}
 				// no follow up - server finished 'connection'
 				else if (response.getStatusLine().getStatusCode() == FINISH) {

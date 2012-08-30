@@ -1,0 +1,20 @@
+{
+	"name": "null",
+	"checksum": "f6ebab71cce50eb44c7b8b52fff851f5",
+	"size": 1187698,
+	"type": "cde",
+	"package": "",
+	"port": -1,
+	"cloudlet": [
+		{
+			"os": "linux",
+			"architecture": "x86-64",
+			"cores_min": 1
+		},
+		{
+			"os": "linux",
+			"architecture": "x86",
+			"cores_min": 1
+		}
+	]
+}

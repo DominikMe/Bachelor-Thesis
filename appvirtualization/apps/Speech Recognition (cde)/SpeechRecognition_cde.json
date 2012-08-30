@@ -1,7 +1,7 @@
 {
 	"name": "SpeechRecognition_cde",
-	"checksum": "20bd21d7d2b526da62cadd551e949c2f",
-	"size": 73390284,
+	"checksum": "b0b589cb6ebcde9a83b81239a08aa6f6",
+	"size": 71038530,
 	"type": "cde",
 	"package": "edu.cmu.sei.sphinxandroid",
 	"port": 10191,
