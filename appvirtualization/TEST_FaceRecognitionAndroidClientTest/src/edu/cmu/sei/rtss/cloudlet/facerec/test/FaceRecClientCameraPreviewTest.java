@@ -23,7 +23,7 @@ public class FaceRecClientCameraPreviewTest extends
 		setActivityInitialTouchMode(false);
 		instr = getInstrumentation();
 		Intent args = new Intent(instr.getTargetContext(), FaceRecClientCameraPreview.class);
-		args.putExtra("address", "128.237.136.198");
+		args.putExtra("address", "192.168.168.176");
 		args.putExtra("port", 9876);
 		setActivityIntent(args);
 		

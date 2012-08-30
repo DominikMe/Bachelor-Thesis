@@ -1,0 +1,7 @@
+TIMELOG /storage/sdcard0/myCloudlets/log/edu.cmu.cs.cloudlet.android.application/2012-08-30 17-20.txt
+1346368716664: Clicked Object Recognition (cde) (+0 ms)
+1346368716665: Find suitable cloudlet. (+1 ms)
+1346368716686: POST application metadata json. (+22 ms)
+1346368716875: PUT application package archive. (+211 ms)
+1346368803565: Start application client. (+86901 ms)
+1346368803635: Application client has started. (+86971 ms)

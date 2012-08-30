@@ -1,0 +1,9 @@
+TIMELOG /storage/sdcard0/myCloudlets/log/edu.cmu.sei.sphinxandroid/2012-08-30 17-42.txt
+1346370124943: Clicked null (cde) (+0 ms)
+1346370124944: Find suitable cloudlet. (+1 ms)
+1346370124965: POST application metadata json. (+22 ms)
+1346370135034: Clicked Speech Recognition (cde) (+10091 ms)
+1346370135035: Find suitable cloudlet. (+10092 ms)
+1346370135045: POST application metadata json. (+10102 ms)
+1346370135350: Start application client. (+10407 ms)
+1346370135484: Application client has started. (+10541 ms)

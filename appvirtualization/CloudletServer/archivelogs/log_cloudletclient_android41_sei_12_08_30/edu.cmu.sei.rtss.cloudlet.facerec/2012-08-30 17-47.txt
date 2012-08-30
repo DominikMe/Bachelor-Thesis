@@ -1,0 +1,7 @@
+TIMELOG /storage/sdcard0/myCloudlets/log/edu.cmu.sei.rtss.cloudlet.facerec/2012-08-30 17-47.txt
+1346370456596: Clicked Face Recognition (cameyo) (+0 ms)
+1346370456598: Find suitable cloudlet. (+2 ms)
+1346370456608: POST application metadata json. (+12 ms)
+1346370456889: PUT application package archive. (+293 ms)
+1346370473788: Start application client. (+17192 ms)
+1346370473959: Application client has started. (+17363 ms)
