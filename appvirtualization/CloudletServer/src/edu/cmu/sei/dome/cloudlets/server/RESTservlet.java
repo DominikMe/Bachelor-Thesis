@@ -73,7 +73,7 @@ public class RESTservlet extends HttpServlet {
 
 		Log.println(appId, "FileServlet.doPost has been triggered.");
 		TimeLog timeLog = TimeLogStore.getTimeLog(appId);
-		timeLog.stamp("Application upload started.");
+		timeLog.stamp("Application upload received.");
 
 		// client must now already have requested server push by sending a GET
 		// request
@@ -85,7 +85,7 @@ public class RESTservlet extends HttpServlet {
 			return;
 		}
 		File f = FileUtils.saveUpload(upload, name, appId);
-		timeLog.stamp("Application upload finished.");
+		timeLog.stamp("Application upload copied.");
 
 		PackageInfo info = null;
 
@@ -95,7 +95,8 @@ public class RESTservlet extends HttpServlet {
 			push.error(Commons.PackageNotFoundException);
 			e.printStackTrace();
 		}
-
+		timeLog.stamp("Parsed PackageInfo.");
+		
 		// check md5hash
 		try {
 			String checkhash = FileUtils.md5hash(f);

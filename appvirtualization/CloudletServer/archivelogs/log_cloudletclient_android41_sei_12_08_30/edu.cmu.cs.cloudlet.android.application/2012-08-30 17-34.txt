@@ -1,6 +1,0 @@
-TIMELOG /storage/sdcard0/myCloudlets/log/edu.cmu.cs.cloudlet.android.application/2012-08-30 17-34.txt
-1346369643365: Find suitable cloudlet. (+0 ms)
-1346369643385: POST application metadata json. (+20 ms)
-1346369643484: PUT application package archive. (+119 ms)
-1346369656153: Start application client. (+12788 ms)
-1346369656212: Application client has started. (+12847 ms)

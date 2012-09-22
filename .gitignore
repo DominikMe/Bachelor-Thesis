@@ -6,5 +6,5 @@ bin/
 appvirtualization/CloudletServer/uploads/
 
 appvirtualization/CloudletServer/log/
-
+appvirtualization/CloudletServer/archivelogs/
 SpeechRecognitionServer/

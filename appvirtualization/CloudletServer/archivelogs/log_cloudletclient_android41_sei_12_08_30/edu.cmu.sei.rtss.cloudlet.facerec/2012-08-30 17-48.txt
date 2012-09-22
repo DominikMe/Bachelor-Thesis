@@ -1,6 +1,0 @@
-TIMELOG /storage/sdcard0/myCloudlets/log/edu.cmu.sei.rtss.cloudlet.facerec/2012-08-30 17-48.txt
-1346370505816: Find suitable cloudlet. (+0 ms)
-1346370505826: POST application metadata json. (+10 ms)
-1346370505935: PUT application package archive. (+119 ms)
-1346370529130: Start application client. (+23314 ms)
-1346370529231: Application client has started. (+23415 ms)

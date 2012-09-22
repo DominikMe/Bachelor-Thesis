@@ -1,0 +1,20 @@
+{
+	"name": "null",
+	"checksum": "dd745c5b96a287f6beca064d6d7c82da",
+	"size": 985762,
+	"type": "cameyo",
+	"package": "",
+	"port": -1,
+	"cloudlet": [
+		{
+			"os": "windows",
+			"architecture": "x86-64",
+			"cores_min": 1
+		},
+		{
+			"os": "windows",
+			"architecture": "x86",
+			"cores_min": 1
+		}
+	]
+}

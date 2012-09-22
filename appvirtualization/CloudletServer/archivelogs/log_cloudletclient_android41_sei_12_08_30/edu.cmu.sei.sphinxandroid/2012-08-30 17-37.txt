@@ -1,7 +1,0 @@
-TIMELOG /storage/sdcard0/myCloudlets/log/edu.cmu.sei.sphinxandroid/2012-08-30 17-37.txt
-1346369818140: Clicked Speech Recognition (cde) (+0 ms)
-1346369818141: Find suitable cloudlet. (+1 ms)
-1346369818159: POST application metadata json. (+19 ms)
-1346369818261: PUT application package archive. (+121 ms)
-1346369858669: Start application client. (+40529 ms)
-1346369858841: Application client has started. (+40701 ms)
