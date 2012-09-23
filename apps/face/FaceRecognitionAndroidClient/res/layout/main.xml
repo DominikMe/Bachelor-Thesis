@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-    <TableRow android:id="@+id/tableRow1" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
-        <TextView android:text="TextView" android:id="@+id/modeLabelId" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-        <ToggleButton android:id="@+id/trainingMode" android:layout_gravity="top" android:layout_width="wrap_content" android:text="ToggleButton" android:layout_height="wrap_content"></ToggleButton>
-        <EditText android:layout_width="wrap_content" android:id="@+id/nameForTraining" android:layout_height="wrap_content" android:text="EditText" android:layout_gravity="top"></EditText>
-        <Button android:text="Start Training" android:id="@+id/trainButton" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
-    </TableRow>
-
-
