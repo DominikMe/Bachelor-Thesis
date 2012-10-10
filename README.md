@@ -15,6 +15,6 @@ The server is a virtualized application, that means there is another layer of ab
 
 Architecture
 ------------
-The Cloudlet Client is an Android app that lists all offload-ready applications. On clicking one of them, the application gets deployed on a cloudlet that matches the rewquirements listed in the application's metadate file (i.e. a json file). After successful deployment the application client Android app is started an can interact with the application server on the cloudlet.
+The Cloudlet Client is an Android app that lists all offload-ready applications. On clicking one of them, the application gets deployed on a cloudlet that matches the requirements listed in the application's metadate file (i.e. a json file). After successful deployment the application client Android app is started and can interact with the application server on the cloudlet.
 
 The Cloudlet Server is a Jetty HTTP server running on the cloudlet machine. It offers a REST interface where POST delivers the application metadata, PUT delivers the actual compressed application server, DELETE deletes the application server and GET returns status about the application's deployment status. Every application is identified by the md5 checksum of the compressed application server. The Cloudlet Server registers via JmDNS and can thereby be discoverered by the cloudlet client.
