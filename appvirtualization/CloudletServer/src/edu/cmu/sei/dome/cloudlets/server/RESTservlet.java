@@ -133,6 +133,7 @@ public class RESTservlet extends HttpServlet {
 			e1.printStackTrace();
 		}
 		timeLog.stamp("Application decompressed.");
+		push.respond("Execute\n");
 
 		// try to execute file
 		try {
@@ -162,7 +163,6 @@ public class RESTservlet extends HttpServlet {
 		timeLog.writeToFile(Commons.LOG + appId + "/" + time + name + ".txt");
 		timeLog.close();
 
-		push.respond("Execute\n");
 
 		// STUB
 		// Just returns the port from the package info. Some advanced logic on
