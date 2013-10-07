@@ -1,0 +1,1 @@
+MOPED object recognition server, compiled on Ubuntu 12.04.

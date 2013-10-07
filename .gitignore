@@ -8,3 +8,5 @@ appvirtualization/CloudletServer/uploads/
 appvirtualization/CloudletServer/log/
 appvirtualization/CloudletServer/archivelogs/
 SpeechRecognitionServer/
+
+zip-password.txt
